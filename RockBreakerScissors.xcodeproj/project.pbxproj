@@ -1,0 +1,612 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		3C5D60EA2F8E851900B936F3 /* MainMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C5D60E92F8E851900B936F3 /* MainMenuView.swift */; };
+		3C5D60EC2F8E855200B936F3 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C5D60EB2F8E855200B936F3 /* GameView.swift */; };
+		3C5D60EE2F8E895300B936F3 /* GameObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C5D60ED2F8E895300B936F3 /* GameObject.swift */; };
+		3C5D60F02F8E898000B936F3 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C5D60EF2F8E898000B936F3 /* GameScene.swift */; };
+		3C5D60F22F8E8F0600B936F3 /* LevelDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C5D60F12F8E8F0600B936F3 /* LevelDefinition.swift */; };
+		3CC035242F8E818A008A5EC5 /* RockBreakerScissorsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CC035232F8E818A008A5EC5 /* RockBreakerScissorsApp.swift */; };
+		3CC035262F8E818A008A5EC5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CC035252F8E818A008A5EC5 /* ContentView.swift */; };
+		3CC035282F8E818C008A5EC5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3CC035272F8E818C008A5EC5 /* Assets.xcassets */; };
+		3CC0352B2F8E818C008A5EC5 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3CC0352A2F8E818C008A5EC5 /* Preview Assets.xcassets */; };
+		3CC035352F8E818D008A5EC5 /* RockBreakerScissorsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CC035342F8E818D008A5EC5 /* RockBreakerScissorsTests.swift */; };
+		3CC0353F2F8E818D008A5EC5 /* RockBreakerScissorsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CC0353E2F8E818D008A5EC5 /* RockBreakerScissorsUITests.swift */; };
+		3CC035412F8E818D008A5EC5 /* RockBreakerScissorsUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CC035402F8E818D008A5EC5 /* RockBreakerScissorsUITestsLaunchTests.swift */; };
+		3CC0354E2F8E835D008A5EC5 /* GameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CC0354D2F8E835D008A5EC5 /* GameViewModel.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		3CC035312F8E818D008A5EC5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3CC035182F8E818A008A5EC5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3CC0351F2F8E818A008A5EC5;
+			remoteInfo = RockBreakerScissors;
+		};
+		3CC0353B2F8E818D008A5EC5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3CC035182F8E818A008A5EC5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3CC0351F2F8E818A008A5EC5;
+			remoteInfo = RockBreakerScissors;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		3C5D60E92F8E851900B936F3 /* MainMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuView.swift; sourceTree = "<group>"; };
+		3C5D60EB2F8E855200B936F3 /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
+		3C5D60ED2F8E895300B936F3 /* GameObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameObject.swift; sourceTree = "<group>"; };
+		3C5D60EF2F8E898000B936F3 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
+		3C5D60F12F8E8F0600B936F3 /* LevelDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelDefinition.swift; sourceTree = "<group>"; };
+		3CC035202F8E818A008A5EC5 /* RockBreakerScissors.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RockBreakerScissors.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3CC035232F8E818A008A5EC5 /* RockBreakerScissorsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RockBreakerScissorsApp.swift; sourceTree = "<group>"; };
+		3CC035252F8E818A008A5EC5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		3CC035272F8E818C008A5EC5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		3CC0352A2F8E818C008A5EC5 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		3CC035302F8E818D008A5EC5 /* RockBreakerScissorsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RockBreakerScissorsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		3CC035342F8E818D008A5EC5 /* RockBreakerScissorsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RockBreakerScissorsTests.swift; sourceTree = "<group>"; };
+		3CC0353A2F8E818D008A5EC5 /* RockBreakerScissorsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RockBreakerScissorsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		3CC0353E2F8E818D008A5EC5 /* RockBreakerScissorsUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RockBreakerScissorsUITests.swift; sourceTree = "<group>"; };
+		3CC035402F8E818D008A5EC5 /* RockBreakerScissorsUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RockBreakerScissorsUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		3CC0354D2F8E835D008A5EC5 /* GameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModel.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		3CC0351D2F8E818A008A5EC5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3CC0352D2F8E818D008A5EC5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3CC035372F8E818D008A5EC5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		3CC035172F8E818A008A5EC5 = {
+			isa = PBXGroup;
+			children = (
+				3CC035222F8E818A008A5EC5 /* RockBreakerScissors */,
+				3CC035332F8E818D008A5EC5 /* RockBreakerScissorsTests */,
+				3CC0353D2F8E818D008A5EC5 /* RockBreakerScissorsUITests */,
+				3CC035212F8E818A008A5EC5 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		3CC035212F8E818A008A5EC5 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3CC035202F8E818A008A5EC5 /* RockBreakerScissors.app */,
+				3CC035302F8E818D008A5EC5 /* RockBreakerScissorsTests.xctest */,
+				3CC0353A2F8E818D008A5EC5 /* RockBreakerScissorsUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		3CC035222F8E818A008A5EC5 /* RockBreakerScissors */ = {
+			isa = PBXGroup;
+			children = (
+				3CC035232F8E818A008A5EC5 /* RockBreakerScissorsApp.swift */,
+				3CC035252F8E818A008A5EC5 /* ContentView.swift */,
+				3CC035272F8E818C008A5EC5 /* Assets.xcassets */,
+				3CC035292F8E818C008A5EC5 /* Preview Content */,
+				3CC0354D2F8E835D008A5EC5 /* GameViewModel.swift */,
+				3C5D60E92F8E851900B936F3 /* MainMenuView.swift */,
+				3C5D60EB2F8E855200B936F3 /* GameView.swift */,
+				3C5D60ED2F8E895300B936F3 /* GameObject.swift */,
+				3C5D60EF2F8E898000B936F3 /* GameScene.swift */,
+				3C5D60F12F8E8F0600B936F3 /* LevelDefinition.swift */,
+			);
+			path = RockBreakerScissors;
+			sourceTree = "<group>";
+		};
+		3CC035292F8E818C008A5EC5 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				3CC0352A2F8E818C008A5EC5 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		3CC035332F8E818D008A5EC5 /* RockBreakerScissorsTests */ = {
+			isa = PBXGroup;
+			children = (
+				3CC035342F8E818D008A5EC5 /* RockBreakerScissorsTests.swift */,
+			);
+			path = RockBreakerScissorsTests;
+			sourceTree = "<group>";
+		};
+		3CC0353D2F8E818D008A5EC5 /* RockBreakerScissorsUITests */ = {
+			isa = PBXGroup;
+			children = (
+				3CC0353E2F8E818D008A5EC5 /* RockBreakerScissorsUITests.swift */,
+				3CC035402F8E818D008A5EC5 /* RockBreakerScissorsUITestsLaunchTests.swift */,
+			);
+			path = RockBreakerScissorsUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		3CC0351F2F8E818A008A5EC5 /* RockBreakerScissors */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3CC035442F8E818D008A5EC5 /* Build configuration list for PBXNativeTarget "RockBreakerScissors" */;
+			buildPhases = (
+				3CC0351C2F8E818A008A5EC5 /* Sources */,
+				3CC0351D2F8E818A008A5EC5 /* Frameworks */,
+				3CC0351E2F8E818A008A5EC5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RockBreakerScissors;
+			productName = RockBreakerScissors;
+			productReference = 3CC035202F8E818A008A5EC5 /* RockBreakerScissors.app */;
+			productType = "com.apple.product-type.application";
+		};
+		3CC0352F2F8E818D008A5EC5 /* RockBreakerScissorsTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3CC035472F8E818D008A5EC5 /* Build configuration list for PBXNativeTarget "RockBreakerScissorsTests" */;
+			buildPhases = (
+				3CC0352C2F8E818D008A5EC5 /* Sources */,
+				3CC0352D2F8E818D008A5EC5 /* Frameworks */,
+				3CC0352E2F8E818D008A5EC5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3CC035322F8E818D008A5EC5 /* PBXTargetDependency */,
+			);
+			name = RockBreakerScissorsTests;
+			productName = RockBreakerScissorsTests;
+			productReference = 3CC035302F8E818D008A5EC5 /* RockBreakerScissorsTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		3CC035392F8E818D008A5EC5 /* RockBreakerScissorsUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3CC0354A2F8E818D008A5EC5 /* Build configuration list for PBXNativeTarget "RockBreakerScissorsUITests" */;
+			buildPhases = (
+				3CC035362F8E818D008A5EC5 /* Sources */,
+				3CC035372F8E818D008A5EC5 /* Frameworks */,
+				3CC035382F8E818D008A5EC5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3CC0353C2F8E818D008A5EC5 /* PBXTargetDependency */,
+			);
+			name = RockBreakerScissorsUITests;
+			productName = RockBreakerScissorsUITests;
+			productReference = 3CC0353A2F8E818D008A5EC5 /* RockBreakerScissorsUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		3CC035182F8E818A008A5EC5 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1420;
+				LastUpgradeCheck = 1420;
+				TargetAttributes = {
+					3CC0351F2F8E818A008A5EC5 = {
+						CreatedOnToolsVersion = 14.2;
+					};
+					3CC0352F2F8E818D008A5EC5 = {
+						CreatedOnToolsVersion = 14.2;
+						TestTargetID = 3CC0351F2F8E818A008A5EC5;
+					};
+					3CC035392F8E818D008A5EC5 = {
+						CreatedOnToolsVersion = 14.2;
+						TestTargetID = 3CC0351F2F8E818A008A5EC5;
+					};
+				};
+			};
+			buildConfigurationList = 3CC0351B2F8E818A008A5EC5 /* Build configuration list for PBXProject "RockBreakerScissors" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 3CC035172F8E818A008A5EC5;
+			productRefGroup = 3CC035212F8E818A008A5EC5 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				3CC0351F2F8E818A008A5EC5 /* RockBreakerScissors */,
+				3CC0352F2F8E818D008A5EC5 /* RockBreakerScissorsTests */,
+				3CC035392F8E818D008A5EC5 /* RockBreakerScissorsUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		3CC0351E2F8E818A008A5EC5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3CC0352B2F8E818C008A5EC5 /* Preview Assets.xcassets in Resources */,
+				3CC035282F8E818C008A5EC5 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3CC0352E2F8E818D008A5EC5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3CC035382F8E818D008A5EC5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		3CC0351C2F8E818A008A5EC5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3CC0354E2F8E835D008A5EC5 /* GameViewModel.swift in Sources */,
+				3C5D60F22F8E8F0600B936F3 /* LevelDefinition.swift in Sources */,
+				3CC035262F8E818A008A5EC5 /* ContentView.swift in Sources */,
+				3C5D60EE2F8E895300B936F3 /* GameObject.swift in Sources */,
+				3C5D60EA2F8E851900B936F3 /* MainMenuView.swift in Sources */,
+				3CC035242F8E818A008A5EC5 /* RockBreakerScissorsApp.swift in Sources */,
+				3C5D60F02F8E898000B936F3 /* GameScene.swift in Sources */,
+				3C5D60EC2F8E855200B936F3 /* GameView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3CC0352C2F8E818D008A5EC5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3CC035352F8E818D008A5EC5 /* RockBreakerScissorsTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3CC035362F8E818D008A5EC5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3CC0353F2F8E818D008A5EC5 /* RockBreakerScissorsUITests.swift in Sources */,
+				3CC035412F8E818D008A5EC5 /* RockBreakerScissorsUITestsLaunchTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		3CC035322F8E818D008A5EC5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3CC0351F2F8E818A008A5EC5 /* RockBreakerScissors */;
+			targetProxy = 3CC035312F8E818D008A5EC5 /* PBXContainerItemProxy */;
+		};
+		3CC0353C2F8E818D008A5EC5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3CC0351F2F8E818A008A5EC5 /* RockBreakerScissors */;
+			targetProxy = 3CC0353B2F8E818D008A5EC5 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		3CC035422F8E818D008A5EC5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		3CC035432F8E818D008A5EC5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		3CC035452F8E818D008A5EC5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"RockBreakerScissors/Preview Content\"";
+				DEVELOPMENT_TEAM = 26U58DY7Y6;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.granthevia.RockBreakerScissors;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		3CC035462F8E818D008A5EC5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"RockBreakerScissors/Preview Content\"";
+				DEVELOPMENT_TEAM = 26U58DY7Y6;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.granthevia.RockBreakerScissors;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		3CC035482F8E818D008A5EC5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 26U58DY7Y6;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.granthevia.RockBreakerScissorsTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RockBreakerScissors.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/RockBreakerScissors";
+			};
+			name = Debug;
+		};
+		3CC035492F8E818D008A5EC5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 26U58DY7Y6;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.granthevia.RockBreakerScissorsTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RockBreakerScissors.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/RockBreakerScissors";
+			};
+			name = Release;
+		};
+		3CC0354B2F8E818D008A5EC5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 26U58DY7Y6;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.granthevia.RockBreakerScissorsUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = RockBreakerScissors;
+			};
+			name = Debug;
+		};
+		3CC0354C2F8E818D008A5EC5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 26U58DY7Y6;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.granthevia.RockBreakerScissorsUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = RockBreakerScissors;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3CC0351B2F8E818A008A5EC5 /* Build configuration list for PBXProject "RockBreakerScissors" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3CC035422F8E818D008A5EC5 /* Debug */,
+				3CC035432F8E818D008A5EC5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3CC035442F8E818D008A5EC5 /* Build configuration list for PBXNativeTarget "RockBreakerScissors" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3CC035452F8E818D008A5EC5 /* Debug */,
+				3CC035462F8E818D008A5EC5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3CC035472F8E818D008A5EC5 /* Build configuration list for PBXNativeTarget "RockBreakerScissorsTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3CC035482F8E818D008A5EC5 /* Debug */,
+				3CC035492F8E818D008A5EC5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3CC0354A2F8E818D008A5EC5 /* Build configuration list for PBXNativeTarget "RockBreakerScissorsUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3CC0354B2F8E818D008A5EC5 /* Debug */,
+				3CC0354C2F8E818D008A5EC5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 3CC035182F8E818A008A5EC5 /* Project object */;
+}
