@@ -15,13 +15,26 @@ struct GameView: View {
                 ZStack {
                     backgroundColor
                         .ignoresSafeArea()
-
+                    
                     SpriteView(scene: scene)
                         .ignoresSafeArea()
-
+                    
                     if viewModel.phase == .won || viewModel.phase == .lost {
                         resultOverlay
                     }
+                    
+                    if viewModel.showTutorial {
+                        TutorialOverlay(
+                            message: currentTutorialMessage,
+                            onNext: {
+                                viewModel.nextTutorialStep()
+                            },
+                            onSkip: {
+                                viewModel.skipTutorial()
+                            }
+                        )
+                    }
+                    
                 }
                 .onAppear {
                     configureScene(size: arenaGeo.size)
@@ -29,6 +42,7 @@ struct GameView: View {
                     DispatchQueue.main.async {
                         scene.size = arenaGeo.size
                         loadCurrentLevel()
+                        viewModel.startTutorialIfNeeded()
                     }
                 }
                 .onChange(of: arenaGeo.size) { newSize in
@@ -40,13 +54,16 @@ struct GameView: View {
                 }
                 .onChange(of: viewModel.currentLevelIndex) { _ in
                     loadCurrentLevel()
+                    viewModel.startTutorialIfNeeded()
                 }
                 .onChange(of: viewModel.reloadTrigger) { _ in
                     loadCurrentLevel()
+                    viewModel.startTutorialIfNeeded()
                 }
                 .onChange(of: viewModel.phase) { newPhase in
                     if newPhase == .playing {
                         loadCurrentLevel()
+                        viewModel.startTutorialIfNeeded()
                     }
                 }
                 .onChange(of: colorScheme) { newScheme in
@@ -63,6 +80,15 @@ struct GameView: View {
 
     private var backgroundColor: Color {
         colorScheme == .dark ? .black : .white
+    }
+        
+    private var currentTutorialMessage: String {
+        guard viewModel.tutorialStep >= 0,
+              viewModel.tutorialStep < viewModel.tutorialMessages.count else {
+            return ""
+        }
+
+        return viewModel.tutorialMessages[viewModel.tutorialStep]
     }
 
     private var topBar: some View {

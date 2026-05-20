@@ -13,6 +13,11 @@ final class GameViewModel: ObservableObject {
     @Published var ammoRemaining: Int = 0
     @Published var currentLevelIndex: Int = 0
     @Published var reloadTrigger: Int = 0
+    
+    @Published var showTutorial = false
+    @Published var tutorialStep = 0
+    @Published var showHowToPlay = false
+
 
     @AppStorage("highestUnlockedLevel") var highestUnlockedLevel: Int = 1
 
@@ -21,8 +26,28 @@ final class GameViewModel: ObservableObject {
         LevelLibrary.level2,
         LevelLibrary.level3,
         LevelLibrary.level4,
-        LevelLibrary.level5
+        LevelLibrary.level5,
+        LevelLibrary.level6,
+        LevelLibrary.level7,
+        LevelLibrary.level8,
+        LevelLibrary.level9,
+        LevelLibrary.level10,
+        LevelLibrary.level11,
+        LevelLibrary.level12,
+        LevelLibrary.level13,
+        LevelLibrary.level14,
+        LevelLibrary.level15,
+        LevelLibrary.level16
     ]
+    
+    let tutorialMessages: [String] = [
+        "Drag from the launcher to aim.",
+        "Release to fire a rock.",
+        "Rock beats scissors.",
+        "Scissors beats paper. Paper beats rock.",
+        "Turn everything into rock to win!"
+    ]
+
 
     var currentLevel: LevelDefinition {
         levels[currentLevelIndex]
@@ -103,4 +128,26 @@ final class GameViewModel: ObservableObject {
         ammoRemaining = 0
         phase = .menu
     }
+    
+    func startTutorialIfNeeded() {
+        if levelNumber == 1 {
+            showTutorial = true
+            tutorialStep = 0
+        }
+    }
+
+    func nextTutorialStep() {
+        if tutorialStep < tutorialMessages.count - 1 {
+            tutorialStep += 1
+        } else {
+            showTutorial = false
+        }
+    }
+
+    func skipTutorial() {
+        showTutorial = false
+    }
+
 }
+
+

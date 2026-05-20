@@ -155,10 +155,21 @@ final class GameScene: SKScene {
     }
 
     private func setupInitialObjects(_ definitions: [InitialObjectDefinition]) {
+        let minX = arenaInset
+        let maxX = size.width - arenaInset
+        let minY = arenaInset + 24
+        let maxY = size.height - arenaInset
+
         for def in definitions {
+            let clampedX = max(0.0, min(1.0, def.xPercent))
+            let clampedY = max(0.0, min(1.0, def.yPercent))
+
+            let x = minX + clampedX * (maxX - minX)
+            let y = minY + clampedY * (maxY - minY)
+
             let node = makeNode(
                 type: def.type,
-                position: def.position,
+                position: CGPoint(x: x, y: y),
                 velocity: def.velocity,
                 radius: def.radius
             )
@@ -291,7 +302,7 @@ final class GameScene: SKScene {
             type: .rock,
             position: launcherPosition,
             velocity: CGVector(dx: vx, dy: vy),
-            radius: 20
+            radius: level.launchedRockRadius
         )
         addChild(rockNode)
         objectNodes.append(rockNode)

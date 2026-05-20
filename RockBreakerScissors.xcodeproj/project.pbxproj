@@ -12,6 +12,7 @@
 		3C5D60EE2F8E895300B936F3 /* GameObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C5D60ED2F8E895300B936F3 /* GameObject.swift */; };
 		3C5D60F02F8E898000B936F3 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C5D60EF2F8E898000B936F3 /* GameScene.swift */; };
 		3C5D60F22F8E8F0600B936F3 /* LevelDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C5D60F12F8E8F0600B936F3 /* LevelDefinition.swift */; };
+		3C65E7F62FA1B7A200809C98 /* TutorialOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C65E7F52FA1B7A200809C98 /* TutorialOverlay.swift */; };
 		3CC035242F8E818A008A5EC5 /* RockBreakerScissorsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CC035232F8E818A008A5EC5 /* RockBreakerScissorsApp.swift */; };
 		3CC035262F8E818A008A5EC5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CC035252F8E818A008A5EC5 /* ContentView.swift */; };
 		3CC035282F8E818C008A5EC5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3CC035272F8E818C008A5EC5 /* Assets.xcassets */; };
@@ -45,6 +46,7 @@
 		3C5D60ED2F8E895300B936F3 /* GameObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameObject.swift; sourceTree = "<group>"; };
 		3C5D60EF2F8E898000B936F3 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		3C5D60F12F8E8F0600B936F3 /* LevelDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelDefinition.swift; sourceTree = "<group>"; };
+		3C65E7F52FA1B7A200809C98 /* TutorialOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialOverlay.swift; sourceTree = "<group>"; };
 		3CC035202F8E818A008A5EC5 /* RockBreakerScissors.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RockBreakerScissors.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3CC035232F8E818A008A5EC5 /* RockBreakerScissorsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RockBreakerScissorsApp.swift; sourceTree = "<group>"; };
 		3CC035252F8E818A008A5EC5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -116,6 +118,7 @@
 				3C5D60ED2F8E895300B936F3 /* GameObject.swift */,
 				3C5D60EF2F8E898000B936F3 /* GameScene.swift */,
 				3C5D60F12F8E8F0600B936F3 /* LevelDefinition.swift */,
+				3C65E7F52FA1B7A200809C98 /* TutorialOverlay.swift */,
 			);
 			path = RockBreakerScissors;
 			sourceTree = "<group>";
@@ -278,6 +281,7 @@
 				3CC0354E2F8E835D008A5EC5 /* GameViewModel.swift in Sources */,
 				3C5D60F22F8E8F0600B936F3 /* LevelDefinition.swift in Sources */,
 				3CC035262F8E818A008A5EC5 /* ContentView.swift in Sources */,
+				3C65E7F62FA1B7A200809C98 /* TutorialOverlay.swift in Sources */,
 				3C5D60EE2F8E895300B936F3 /* GameObject.swift in Sources */,
 				3C5D60EA2F8E851900B936F3 /* MainMenuView.swift in Sources */,
 				3CC035242F8E818A008A5EC5 /* RockBreakerScissorsApp.swift in Sources */,
