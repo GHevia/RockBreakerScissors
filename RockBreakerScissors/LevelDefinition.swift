@@ -46,6 +46,23 @@ struct LevelDefinition {
     let launchSpeed: CGFloat
     let launchedRockRadius: CGFloat
     let initialObjects: [InitialObjectDefinition]
+    let introMessage: String?
+
+    init(
+        levelNumber: Int,
+        startingAmmo: Int,
+        launchSpeed: CGFloat,
+        launchedRockRadius: CGFloat,
+        initialObjects: [InitialObjectDefinition],
+        introMessage: String? = nil
+    ) {
+        self.levelNumber = levelNumber
+        self.startingAmmo = startingAmmo
+        self.launchSpeed = launchSpeed
+        self.launchedRockRadius = launchedRockRadius
+        self.initialObjects = initialObjects
+        self.introMessage = introMessage
+    }
 }
 
 extension CGVector {
@@ -320,7 +337,8 @@ enum LevelLibrary {
             InitialObjectDefinition(type: .scissors, xPercent: 0.38, yPercent: 0.72, directionDX: 0, directionDY: -1, speed: 210, radius: 20),
             InitialObjectDefinition(type: .paper, xPercent: 0.62, yPercent: 0.30, directionDX: 0, directionDY: 1, speed: 210, radius: 20),
             InitialObjectDefinition(type: .scissors, xPercent: 0.82, yPercent: 0.78, directionDX: 0, directionDY: -1, speed: 210, radius: 20)
-        ]
+        ],
+        introMessage: "Objects move faster now."
     )
 
     static let level7 = LevelDefinition(
@@ -343,11 +361,11 @@ enum LevelLibrary {
         launchSpeed: 215,
         launchedRockRadius: 20,
         initialObjects: [
-            InitialObjectDefinition(type: .paper, xPercent: 0.18, yPercent: 0.24, angleDegrees: 22, speed: 205, radius: 20),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.80, yPercent: 0.30, angleDegrees: 146, speed: 205, radius: 20),
-            InitialObjectDefinition(type: .paper, xPercent: 0.28, yPercent: 0.70, angleDegrees: 320, speed: 205, radius: 20),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.78, yPercent: 0.78, angleDegrees: 212, speed: 205, radius: 20),
-            InitialObjectDefinition(type: .paper, xPercent: 0.52, yPercent: 0.50, angleDegrees: 88, speed: 190, radius: 20)
+            InitialObjectDefinition(type: .paper, xPercent: 0.14, yPercent: 0.22, angleDegrees: 0, speed: 150, radius: 20),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.34, yPercent: 0.38, angleDegrees: 0, speed: 150, radius: 20),
+            InitialObjectDefinition(type: .paper, xPercent: 0.54, yPercent: 0.54, angleDegrees: 0, speed: 150, radius: 20),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.74, yPercent: 0.70, angleDegrees: 0, speed: 150, radius: 20),
+            InitialObjectDefinition(type: .paper, xPercent: 0.22, yPercent: 0.86, angleDegrees: 0, speed: 150, radius: 20)
         ]
     )
 
@@ -375,13 +393,13 @@ enum LevelLibrary {
         launchedRockRadius: 20,
         initialObjects: [
             // Theme: center traffic, with separated lanes to prevent instant collapse
-            InitialObjectDefinition(type: .paper, xPercent: 0.18, yPercent: 0.36, angleDegrees: 6, speed: 210, radius: 20),
-            InitialObjectDefinition(type: .paper, xPercent: 0.82, yPercent: 0.66, angleDegrees: 186, speed: 210, radius: 20),
+            InitialObjectDefinition(type: .paper, xPercent: 0.16, yPercent: 0.18, angleDegrees: 90, speed: 160, radius: 20),
+            InitialObjectDefinition(type: .paper, xPercent: 0.52, yPercent: 0.58, angleDegrees: 90, speed: 160, radius: 20),
 
-            InitialObjectDefinition(type: .scissors, xPercent: 0.38, yPercent: 0.18, angleDegrees: 82, speed: 210, radius: 20),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.68, yPercent: 0.82, angleDegrees: 262, speed: 210, radius: 20),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.34, yPercent: 0.38, angleDegrees: 90, speed: 160, radius: 20),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.70, yPercent: 0.78, angleDegrees: 90, speed: 160, radius: 20),
 
-            InitialObjectDefinition(type: .paper, xPercent: 0.28, yPercent: 0.80, angleDegrees: 338, speed: 205, radius: 20)
+            InitialObjectDefinition(type: .paper, xPercent: 0.86, yPercent: 0.30, angleDegrees: 90, speed: 160, radius: 20)
         ]
     )
 
@@ -392,11 +410,11 @@ enum LevelLibrary {
         launchedRockRadius: 20,
         initialObjects: [
             // Theme: diagonal dispersion with offsets between opposing types
-            InitialObjectDefinition(type: .paper, xPercent: 0.16, yPercent: 0.26, angleDegrees: 34, speed: 205, radius: 20),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.82, yPercent: 0.22, angleDegrees: 132, speed: 205, radius: 20),
-            InitialObjectDefinition(type: .paper, xPercent: 0.26, yPercent: 0.56, angleDegrees: 304, speed: 205, radius: 20),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.74, yPercent: 0.62, angleDegrees: 206, speed: 205, radius: 20),
-            InitialObjectDefinition(type: .paper, xPercent: 0.48, yPercent: 0.84, angleDegrees: 252, speed: 195, radius: 20)
+            InitialObjectDefinition(type: .paper, xPercent: 0.14, yPercent: 0.18, angleDegrees: 25, speed: 150, radius: 20),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.84, yPercent: 0.28, angleDegrees: 155, speed: 150, radius: 20),
+            InitialObjectDefinition(type: .paper, xPercent: 0.18, yPercent: 0.56, angleDegrees: 335, speed: 150, radius: 20),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.78, yPercent: 0.70, angleDegrees: 205, speed: 150, radius: 20),
+            InitialObjectDefinition(type: .paper, xPercent: 0.50, yPercent: 0.86, angleDegrees: 270, speed: 130, radius: 20)
         ]
     )
 
@@ -417,34 +435,34 @@ enum LevelLibrary {
 
     static let level13 = LevelDefinition(
         levelNumber: 13,
-        startingAmmo: 3,
-        launchSpeed: 240,
+        startingAmmo: 4,
+        launchSpeed: 230,
         launchedRockRadius: 18,
         initialObjects: [
-            // Theme: first friendly rock, random field
+            // Theme: first friendly rock, with lanes that leave time to plan
             InitialObjectDefinition(type: .rock,
-                                    xPercent: 0.50, yPercent: 0.50,
-                                    angleDegrees: -50, speed: 240,
+                                    xPercent: 0.16, yPercent: 0.24,
+                                    angleDegrees: 0, speed: 150,
                                     radius: 18),
 
             InitialObjectDefinition(type: .paper,
-                                    xPercent: 0.18, yPercent: 0.28,
-                                    angleDegrees: 58, speed: 240,
+                                    xPercent: 0.36, yPercent: 0.38,
+                                    angleDegrees: 0, speed: 150,
                                     radius: 18),
             InitialObjectDefinition(type: .scissors,
-                                    xPercent: 0.82, yPercent: 0.30,
-                                    angleDegrees: -38, speed: 240,
+                                    xPercent: 0.58, yPercent: 0.52,
+                                    angleDegrees: 0, speed: 150,
                                     radius: 18),
-            
             InitialObjectDefinition(type: .paper,
-                                    xPercent: 0.24, yPercent: 0.76,
-                                    angleDegrees: -312, speed: 240,
+                                    xPercent: 0.78, yPercent: 0.66,
+                                    angleDegrees: 0, speed: 150,
                                     radius: 18),
             InitialObjectDefinition(type: .scissors,
-                                    xPercent: 0.76, yPercent: 0.78,
-                                    angleDegrees: -228, speed: 240,
+                                    xPercent: 0.26, yPercent: 0.82,
+                                    angleDegrees: 0, speed: 150,
                                     radius: 18)
-        ]
+        ],
+        introMessage: "Some levels start with rocks already in play."
     )
 
     static let level14 = LevelDefinition(
@@ -557,7 +575,8 @@ enum LevelLibrary {
             InitialObjectDefinition(type: .scissors, xPercent: 0.82, yPercent: 0.44, angleDegrees: 188, speed: 220, radius: 20),
             InitialObjectDefinition(type: .paper, xPercent: 0.28, yPercent: 0.74, angleDegrees: 332, speed: 220, radius: 20),
             InitialObjectDefinition(type: .scissors, xPercent: 0.76, yPercent: 0.82, angleDegrees: 214, speed: 220, radius: 20)
-        ]
+        ],
+        introMessage: "Watch the starting rock. It can help or hurt depending on timing."
     )
 
     static let level18 = LevelDefinition(
@@ -585,7 +604,8 @@ enum LevelLibrary {
             InitialObjectDefinition(type: .scissors, xPercent: 0.64, yPercent: 0.82, angleDegrees: 258, speed: 230, radius: 20),
             InitialObjectDefinition(type: .paper, xPercent: 0.84, yPercent: 0.68, angleDegrees: 188, speed: 230, radius: 20),
             InitialObjectDefinition(type: .rock, xPercent: 0.50, yPercent: 0.50, angleDegrees: 24, speed: 220, radius: 20)
-        ]
+        ],
+        introMessage: "Ammo is tighter now. Wait for the board to open up."
     )
 
     static let level20 = LevelDefinition(

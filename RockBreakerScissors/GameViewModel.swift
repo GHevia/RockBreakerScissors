@@ -2,6 +2,12 @@ import Foundation
 import SwiftUI
 
 final class GameViewModel: ObservableObject {
+    enum TutorialEvent {
+        case aimStarted
+        case rockLaunched
+        case objectConverted
+    }
+
     enum Phase {
         case menu
         case playing
@@ -17,17 +23,18 @@ final class GameViewModel: ObservableObject {
 
     @Published var showTutorial = false
     @Published var tutorialStep = 0
+    @Published var levelHintMessage: String?
+    @Published var levelHintID = UUID()
 
     @AppStorage("highestUnlockedLevel") var highestUnlockedLevel: Int = 1
 
     let levels = LevelLibrary.allLevels
 
-    let tutorialMessages: [String] = [
+    private let tutorialMessages: [String] = [
         "Drag from the launcher to aim.",
         "Release to fire a rock.",
-        "Rock beats scissors.",
-        "Scissors beats paper. Paper beats rock.",
-        "Turn everything into rock to win!"
+        "Collisions change object types: rock beats scissors, scissors beats paper, paper beats rock.",
+        "Turn everything into rock to win."
     ]
 
     var currentLevel: LevelDefinition {
@@ -62,6 +69,16 @@ final class GameViewModel: ObservableObject {
         }
     }
 
+    var currentTutorialMessage: String? {
+        guard showTutorial else { return nil }
+        guard tutorialStep >= 0 && tutorialStep < tutorialMessages.count else { return nil }
+        return tutorialMessages[tutorialStep]
+    }
+
+    var levelTitle: String {
+        levelNumber == 1 ? "Tutorial Level" : "Level \(levelNumber)"
+    }
+
     func startGame(at levelIndex: Int? = nil) {
         if let levelIndex = levelIndex {
             let clamped = max(0, min(levelIndex, levels.count - 1))
@@ -71,6 +88,7 @@ final class GameViewModel: ObservableObject {
 
         ammoRemaining = currentLevel.startingAmmo
         resultObjectType = nil
+        dismissLevelHint()
         reloadTrigger += 1
         phase = .playing
     }
@@ -78,11 +96,14 @@ final class GameViewModel: ObservableObject {
     func restartLevel() {
         ammoRemaining = currentLevel.startingAmmo
         resultObjectType = nil
+        dismissLevelHint()
         reloadTrigger += 1
         phase = .playing
     }
 
     func goToMenu() {
+        dismissLevelHint()
+        showTutorial = false
         phase = .menu
     }
 
@@ -94,6 +115,8 @@ final class GameViewModel: ObservableObject {
 
     func completeLevel(finalObjectType: ObjectType) {
         resultObjectType = finalObjectType
+        dismissLevelHint()
+        showTutorial = false
         let newlyUnlocked = currentLevelIndex + 2
         if newlyUnlocked > highestUnlockedLevel {
             highestUnlockedLevel = min(newlyUnlocked, levels.count)
@@ -103,6 +126,8 @@ final class GameViewModel: ObservableObject {
 
     func failLevel(finalObjectType: ObjectType) {
         resultObjectType = finalObjectType
+        dismissLevelHint()
+        showTutorial = false
         phase = .lost
     }
 
@@ -115,6 +140,7 @@ final class GameViewModel: ObservableObject {
         currentLevelIndex += 1
         ammoRemaining = currentLevel.startingAmmo
         resultObjectType = nil
+        dismissLevelHint()
         reloadTrigger += 1
         phase = .playing
     }
@@ -133,26 +159,57 @@ final class GameViewModel: ObservableObject {
         currentLevelIndex = 0
         ammoRemaining = 0
         resultObjectType = nil
+        dismissLevelHint()
+        showTutorial = false
         phase = .menu
     }
 
     func startTutorialIfNeeded() {
+        guard phase == .playing else { return }
+
         if levelNumber == 1 {
-            showTutorial = true
-            tutorialStep = 0
+            if showTutorial == false {
+                tutorialStep = 0
+                showTutorial = true
+            }
+        } else {
+            showTutorial = false
         }
     }
 
-    func nextTutorialStep() {
-        if tutorialStep < tutorialMessages.count - 1 {
+    func handleTutorialEvent(_ event: TutorialEvent) {
+        guard showTutorial else { return }
+
+        switch (tutorialStep, event) {
+        case (0, .aimStarted),
+             (1, .rockLaunched),
+             (2, .objectConverted):
             tutorialStep += 1
-        } else {
+
+        default:
+            break
+        }
+
+        if tutorialStep >= tutorialMessages.count {
             showTutorial = false
         }
     }
 
     func skipTutorial() {
         showTutorial = false
+    }
+
+    func showLevelHintIfNeeded() {
+        guard phase == .playing else { return }
+        guard levelNumber != 1 else { return }
+        guard let message = currentLevel.introMessage else { return }
+
+        levelHintMessage = message
+        levelHintID = UUID()
+    }
+
+    func dismissLevelHint() {
+        levelHintMessage = nil
     }
 }
 

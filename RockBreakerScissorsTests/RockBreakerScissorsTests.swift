@@ -72,4 +72,128 @@ final class RockBreakerScissorsTests: XCTestCase {
             }
         }
     }
+
+    func testReportedProblemLevelsDoNotCollapseWithoutPlayerInput() throws {
+        let levels = [
+            LevelLibrary.level8,
+            LevelLibrary.level10,
+            LevelLibrary.level11,
+            LevelLibrary.level13
+        ]
+
+        for level in levels {
+            let uniformType = simulateUniformType(level: level, seconds: 3)
+            XCTAssertNil(
+                uniformType,
+                "Level \(level.levelNumber) became all \(uniformType?.displayName ?? "unknown") without player input"
+            )
+        }
+    }
+
+    private func simulateUniformType(level: LevelDefinition, seconds: Int) -> ObjectType? {
+        let arenaSize = CGSize(width: 320, height: 568)
+        let arenaInset: CGFloat = 24
+        let minX = arenaInset
+        let maxX = arenaSize.width - arenaInset
+        let minY = arenaInset + 24
+        let maxY = arenaSize.height - arenaInset
+        let objectScale: CGFloat = 0.80
+
+        var objects = level.initialObjects.map { definition in
+            SimulatedObject(
+                type: definition.type,
+                position: CGPoint(
+                    x: minX + definition.xPercent * (maxX - minX),
+                    y: minY + definition.yPercent * (maxY - minY)
+                ),
+                velocity: definition.velocity,
+                radius: definition.radius * objectScale
+            )
+        }
+
+        for _ in 0..<(seconds * 60) {
+            for index in objects.indices {
+                move(
+                    object: &objects[index],
+                    minX: minX,
+                    maxX: maxX,
+                    minY: minY,
+                    maxY: maxY
+                )
+            }
+
+            for i in 0..<(objects.count - 1) {
+                for j in (i + 1)..<objects.count {
+                    var first = objects[i]
+                    var second = objects[j]
+                    applyCollisionIfNeeded(first: &first, second: &second)
+                    objects[i] = first
+                    objects[j] = second
+                }
+            }
+
+            if let firstType = objects.first?.type,
+               objects.allSatisfy({ $0.type == firstType }) {
+                return firstType
+            }
+        }
+
+        return nil
+    }
+
+    private func move(
+        object: inout SimulatedObject,
+        minX: CGFloat,
+        maxX: CGFloat,
+        minY: CGFloat,
+        maxY: CGFloat
+    ) {
+        let dt: CGFloat = 1.0 / 60.0
+        object.position.x += object.velocity.dx * dt
+        object.position.y += object.velocity.dy * dt
+
+        if object.position.x - object.radius < minX {
+            object.position.x = minX + object.radius
+            object.velocity.dx *= -1
+        } else if object.position.x + object.radius > maxX {
+            object.position.x = maxX - object.radius
+            object.velocity.dx *= -1
+        }
+
+        if object.position.y - object.radius < minY {
+            object.position.y = minY + object.radius
+            object.velocity.dy *= -1
+        } else if object.position.y + object.radius > maxY {
+            object.position.y = maxY - object.radius
+            object.velocity.dy *= -1
+        }
+    }
+
+    private func applyCollisionIfNeeded(first: inout SimulatedObject, second: inout SimulatedObject) {
+        let dx = first.position.x - second.position.x
+        let dy = first.position.y - second.position.y
+        let distanceSquared = dx * dx + dy * dy
+        let allowed = first.radius + second.radius
+
+        guard distanceSquared <= allowed * allowed else { return }
+        guard first.type != second.type else { return }
+
+        switch (first.type, second.type) {
+        case (.rock, .scissors), (.scissors, .paper), (.paper, .rock):
+            second.type = first.type
+
+        case (.scissors, .rock), (.paper, .scissors), (.rock, .paper):
+            first.type = second.type
+
+        default:
+            break
+        }
+    }
+
+    private struct SimulatedObject {
+        var type: ObjectType
+        var position: CGPoint
+        var velocity: CGVector
+        let radius: CGFloat
+    }
 }
