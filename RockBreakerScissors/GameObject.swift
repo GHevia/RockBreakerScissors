@@ -23,6 +23,10 @@ enum ObjectType {
             return "scissors"
         }
     }
+
+    var assetName: String {
+        displayName
+    }
 }
 
 final class GameObject {
