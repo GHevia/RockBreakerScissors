@@ -12,6 +12,7 @@ final class GameScene: SKScene {
     var didLaunchRock: (() -> Void)?
     var didConvertObject: (() -> Void)?
     var didTouchArena: (() -> Void)?
+    var didTryLaunchWithoutAmmo: (() -> Void)?
 
     // MARK: - Private state
 
@@ -25,6 +26,8 @@ final class GameScene: SKScene {
     private var launcherNode: SKSpriteNode?
     private var launchPortNode: SKShapeNode?
     private var boundaryLineNodes: [SKShapeNode] = []
+    private var wallNodes: [SKShapeNode] = []
+    private var wallRects: [CGRect] = []
 
     private let arenaInset: CGFloat = 24
     private let launchPortRadius: CGFloat = 18
@@ -68,6 +71,11 @@ final class GameScene: SKScene {
         for line in boundaryLineNodes {
             line.strokeColor = accentColor
         }
+
+        for wall in wallNodes {
+            wall.fillColor = secondaryAccentColor
+            wall.strokeColor = accentColor
+        }
     }
 
     func load(level: LevelDefinition) {
@@ -78,11 +86,13 @@ final class GameScene: SKScene {
         objectNodes.removeAll()
         aimDots.removeAll()
         boundaryLineNodes.removeAll()
+        wallNodes.removeAll()
+        wallRects.removeAll()
         isShowingResult = false
         touchStartPoint = nil
 
-        
         setupLauncher()
+        setupWalls(level.walls)
         setupInitialObjects(level.initialObjects)
         applyTheme(isDarkMode: isDarkMode)
         setupBoundaries()
@@ -157,6 +167,38 @@ final class GameScene: SKScene {
         port.zPosition = 11
         addChild(port)
         launchPortNode = port
+    }
+
+    private func setupWalls(_ definitions: [ArenaWallDefinition]) {
+        let minX = arenaInset
+        let maxX = size.width - arenaInset
+        let minY = arenaInset + 24
+        let maxY = size.height - arenaInset
+        let arenaWidth = maxX - minX
+        let arenaHeight = maxY - minY
+
+        for definition in definitions {
+            let width = max(8, definition.widthPercent * arenaWidth)
+            let height = max(8, definition.heightPercent * arenaHeight)
+            let centerX = minX + definition.xPercent * arenaWidth
+            let centerY = minY + definition.yPercent * arenaHeight
+            let rect = CGRect(
+                x: centerX - width / 2,
+                y: centerY - height / 2,
+                width: width,
+                height: height
+            )
+
+            let wall = SKShapeNode(rect: rect, cornerRadius: 4)
+            wall.fillColor = secondaryAccentColor
+            wall.strokeColor = accentColor
+            wall.lineWidth = 2
+            wall.zPosition = 4
+            addChild(wall)
+
+            wallNodes.append(wall)
+            wallRects.append(rect)
+        }
     }
 
     private func setupInitialObjects(_ definitions: [InitialObjectDefinition]) {
@@ -253,7 +295,10 @@ final class GameScene: SKScene {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first else { return }
         guard isShowingResult == false else { return }
-        guard canLaunchRock?() ?? true else { return }
+        guard canLaunchRock?() ?? true else {
+            didTryLaunchWithoutAmmo?()
+            return
+        }
 
         let location = touch.location(in: self)
         touchStartPoint = location
@@ -394,6 +439,7 @@ final class GameScene: SKScene {
             var newY = node.position.y + vy * dt
             var newVX = vx
             var newVY = vy
+            let oldPosition = node.position
 
             if newX - radius < minX {
                 newX = minX + radius
@@ -411,9 +457,57 @@ final class GameScene: SKScene {
                 newVY *= -1
             }
 
+            bounceOffWalls(
+                x: &newX,
+                y: &newY,
+                vx: &newVX,
+                vy: &newVY,
+                radius: radius,
+                oldPosition: oldPosition
+            )
+
             node.position = CGPoint(x: newX, y: newY)
             node.userData?["vx"] = newVX
             node.userData?["vy"] = newVY
+        }
+    }
+
+    private func bounceOffWalls(
+        x: inout CGFloat,
+        y: inout CGFloat,
+        vx: inout CGFloat,
+        vy: inout CGFloat,
+        radius: CGFloat,
+        oldPosition: CGPoint
+    ) {
+        for wall in wallRects {
+            let expandedWall = wall.insetBy(dx: -radius, dy: -radius)
+            guard expandedWall.contains(CGPoint(x: x, y: y)) else { continue }
+
+            if oldPosition.x + radius <= wall.minX {
+                x = wall.minX - radius
+                vx = -abs(vx)
+            } else if oldPosition.x - radius >= wall.maxX {
+                x = wall.maxX + radius
+                vx = abs(vx)
+            } else if oldPosition.y + radius <= wall.minY {
+                y = wall.minY - radius
+                vy = -abs(vy)
+            } else if oldPosition.y - radius >= wall.maxY {
+                y = wall.maxY + radius
+                vy = abs(vy)
+            } else {
+                let xDistance = min(abs(x - wall.minX), abs(x - wall.maxX))
+                let yDistance = min(abs(y - wall.minY), abs(y - wall.maxY))
+
+                if xDistance < yDistance {
+                    x = oldPosition.x
+                    vx *= -1
+                } else {
+                    y = oldPosition.y
+                    vy *= -1
+                }
+            }
         }
     }
 
