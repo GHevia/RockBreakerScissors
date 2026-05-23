@@ -8,6 +8,10 @@ final class GameScene: SKScene {
     var onLose: ((ObjectType) -> Void)?
     var didUseAmmo: (() -> Void)?
     var canLaunchRock: (() -> Bool)?
+    var didStartAiming: (() -> Void)?
+    var didLaunchRock: (() -> Void)?
+    var didConvertObject: (() -> Void)?
+    var didTouchArena: (() -> Void)?
 
     // MARK: - Private state
 
@@ -237,8 +241,11 @@ final class GameScene: SKScene {
     }
 
     private func setType(_ type: ObjectType, for node: SKSpriteNode) {
+        guard objectType(for: node) != type else { return }
+
         node.texture = SKTexture(imageNamed: assetName(for: type))
         node.name = objectName(for: type)
+        didConvertObject?()
     }
 
     // MARK: - Touch handling
@@ -251,6 +258,8 @@ final class GameScene: SKScene {
         let location = touch.location(in: self)
         touchStartPoint = location
         updateAimDots(from: launcherPosition, toward: location)
+        didTouchArena?()
+        didStartAiming?()
     }
 
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -310,6 +319,7 @@ final class GameScene: SKScene {
         objectNodes.append(rockNode)
 
         didUseAmmo?()
+        didLaunchRock?()
 
         clearAimDots()
         touchStartPoint = nil
