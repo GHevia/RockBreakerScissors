@@ -41,7 +41,7 @@ struct MainMenuView: View {
                 .frame(width: 84, height: 84)
 
             Text("RockBreakerScissors")
-                .font(.system(size: 34, weight: .bold, design: .rounded))
+                .font(.system(size: 30, weight: .bold, design: .rounded))
                 .multilineTextAlignment(.center)
 
             Text("Turn everything into rock.")
