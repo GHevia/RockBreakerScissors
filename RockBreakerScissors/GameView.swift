@@ -18,23 +18,27 @@ struct GameView: View {
                     
                     SpriteView(scene: scene)
                         .ignoresSafeArea()
-                    
+
+                    if let message = viewModel.levelHintMessage {
+                        VStack {
+                            LevelHintOverlay(message: message)
+                            Spacer()
+                        }
+                    }
+
                     if viewModel.phase == .won || viewModel.phase == .lost {
                         resultOverlay
                     }
                     
-                    if viewModel.showTutorial {
-                        TutorialOverlay(
-                            message: currentTutorialMessage,
-                            onNext: {
-                                viewModel.nextTutorialStep()
-                            },
-                            onSkip: {
+                    if let message = viewModel.currentTutorialMessage,
+                       viewModel.phase == .playing {
+                        VStack {
+                            Spacer()
+                            TutorialOverlay(message: message) {
                                 viewModel.skipTutorial()
                             }
-                        )
+                        }
                     }
-                    
                 }
                 .onAppear {
                     configureScene(size: arenaGeo.size)
@@ -43,6 +47,7 @@ struct GameView: View {
                         scene.size = arenaGeo.size
                         loadCurrentLevel()
                         viewModel.startTutorialIfNeeded()
+                        viewModel.showLevelHintIfNeeded()
                     }
                 }
                 .onChange(of: arenaGeo.size) { newSize in
@@ -55,15 +60,26 @@ struct GameView: View {
                 .onChange(of: viewModel.currentLevelIndex) { _ in
                     loadCurrentLevel()
                     viewModel.startTutorialIfNeeded()
+                    viewModel.showLevelHintIfNeeded()
                 }
                 .onChange(of: viewModel.reloadTrigger) { _ in
                     loadCurrentLevel()
                     viewModel.startTutorialIfNeeded()
+                    viewModel.showLevelHintIfNeeded()
                 }
                 .onChange(of: viewModel.phase) { newPhase in
                     if newPhase == .playing {
                         loadCurrentLevel()
                         viewModel.startTutorialIfNeeded()
+                        viewModel.showLevelHintIfNeeded()
+                    }
+                }
+                .onChange(of: viewModel.levelHintID) { hintID in
+                    let currentID = hintID
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+                        if viewModel.levelHintID == currentID {
+                            viewModel.dismissLevelHint()
+                        }
                     }
                 }
                 .onChange(of: colorScheme) { newScheme in
@@ -81,16 +97,6 @@ struct GameView: View {
     private var backgroundColor: Color {
         colorScheme == .dark ? .black : .white
     }
-        
-    private var currentTutorialMessage: String {
-        guard viewModel.tutorialStep >= 0,
-              viewModel.tutorialStep < viewModel.tutorialMessages.count else {
-            return ""
-        }
-
-        return viewModel.tutorialMessages[viewModel.tutorialStep]
-    }
-
     private var topBar: some View {
         HStack(spacing: 12) {
             smallButton(title: "Menu") {
@@ -99,7 +105,7 @@ struct GameView: View {
 
             Spacer()
 
-            levelChip(number: viewModel.levelNumber)
+            levelChip(title: viewModel.levelTitle)
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 12)
@@ -169,6 +175,22 @@ struct GameView: View {
         scene.didUseAmmo = {
             viewModel.useAmmo()
         }
+
+        scene.didStartAiming = {
+            viewModel.handleTutorialEvent(.aimStarted)
+        }
+
+        scene.didLaunchRock = {
+            viewModel.handleTutorialEvent(.rockLaunched)
+        }
+
+        scene.didConvertObject = {
+            viewModel.handleTutorialEvent(.objectConverted)
+        }
+
+        scene.didTouchArena = {
+            viewModel.dismissLevelHint()
+        }
     }
 
     private func loadCurrentLevel() {
@@ -177,10 +199,10 @@ struct GameView: View {
         scene.load(level: viewModel.currentLevel)
     }
 
-    private func levelChip(number: Int) -> some View {
+    private func levelChip(title: String) -> some View {
         HStack(spacing: 6) {
             Image(systemName: "flag.fill")
-            Text("Level \(number)")
+            Text(title)
                 .font(.subheadline.bold())
                 .lineLimit(1)
                 .minimumScaleFactor(0.85)

@@ -10,29 +10,53 @@ import SwiftUI
 
 struct TutorialOverlay: View {
     let message: String
-    let onNext: () -> Void
     let onSkip: () -> Void
 
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Tutorial Level")
+                .font(.caption.bold())
+                .textCase(.uppercase)
+                .foregroundColor(.white.opacity(0.72))
+
             Text(message)
-                .font(.headline)
-                .multilineTextAlignment(.center)
+                .font(.subheadline.bold())
+                .fixedSize(horizontal: false, vertical: true)
 
             HStack {
+                Spacer()
+
                 Button("Skip") {
                     onSkip()
                 }
-
-                Button("Next") {
-                    onNext()
-                }
+                .font(.caption.bold())
             }
         }
-        .padding()
-        .background(Color.black.opacity(0.75))
+        .padding(14)
+        .frame(maxWidth: 320, alignment: .leading)
+        .background(Color.black.opacity(0.78))
         .foregroundColor(.white)
-        .cornerRadius(16)
-        .padding()
+        .cornerRadius(14)
+        .padding(.horizontal, 16)
+        .padding(.bottom, 16)
     }
+}
+
+struct LevelHintOverlay: View {
+    let message: String
+
+    var body: some View {
+        Text(message)
+            .font(.subheadline.bold())
+            .multilineTextAlignment(.center)
+            .fixedSize(horizontal: false, vertical: true)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
+            .frame(maxWidth: 320)
+            .background(Color.black.opacity(0.78))
+            .foregroundColor(.white)
+            .cornerRadius(14)
+            .padding(.horizontal, 16)
+            .padding(.top, 16)
+        }
 }
