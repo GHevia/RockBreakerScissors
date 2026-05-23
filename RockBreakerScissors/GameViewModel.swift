@@ -25,13 +25,14 @@ final class GameViewModel: ObservableObject {
     @Published var tutorialStep = 0
     @Published var levelHintMessage: String?
     @Published var levelHintID = UUID()
+    @Published var ammoWarningID = UUID()
 
     @AppStorage("highestUnlockedLevel") var highestUnlockedLevel: Int = 1
 
     let levels = LevelLibrary.allLevels
 
     private let tutorialMessages: [String] = [
-        "Drag from the launcher to aim.",
+        "Tap anywhere to fire, or drag from the launcher to aim.",
         "Release to fire a rock.",
         "Collisions change object types: rock beats scissors, scissors beats paper, paper beats rock.",
         "Turn everything into rock to win."
@@ -51,22 +52,6 @@ final class GameViewModel: ObservableObject {
 
     var continueLevelIndex: Int {
         min(max(highestUnlockedLevel - 1, 0), levels.count - 1)
-    }
-
-    var resultTitle: String {
-        guard let resultObjectType else {
-            return phase == .won ? "You won!" : "You lost!"
-        }
-
-        let objectName = resultObjectType.displayName
-        switch phase {
-        case .won:
-            return "All objects are \(objectName) - You won!"
-        case .lost:
-            return "All objects are \(objectName) - You lost!"
-        case .menu, .playing:
-            return ""
-        }
     }
 
     var currentTutorialMessage: String? {
@@ -210,6 +195,12 @@ final class GameViewModel: ObservableObject {
 
     func dismissLevelHint() {
         levelHintMessage = nil
+    }
+
+    func warnNoAmmoIfNeeded() {
+        guard phase == .playing else { return }
+        guard ammoRemaining == 0 else { return }
+        ammoWarningID = UUID()
     }
 }
 

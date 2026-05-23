@@ -6,6 +6,7 @@ struct GameView: View {
     @Environment(\.colorScheme) private var colorScheme
 
     @State private var scene = GameScene()
+    @State private var ammoWarningFlash = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -82,6 +83,9 @@ struct GameView: View {
                         }
                     }
                 }
+                .onChange(of: viewModel.ammoWarningID) { _ in
+                    flashAmmoCounter()
+                }
                 .onChange(of: colorScheme) { newScheme in
                     let isDark = newScheme == .dark
                     scene.backgroundColor = isDark ? .black : .white
@@ -128,13 +132,31 @@ struct GameView: View {
     }
 
     private var resultOverlay: some View {
-        VStack(spacing: 16) {
-            Text(viewModel.resultTitle)
-                .font(.system(size: 24, weight: .bold, design: .rounded))
-                .multilineTextAlignment(.center)
+        let didWin = viewModel.phase == .won
+
+        return VStack(spacing: 16) {
+            if let resultObjectType = viewModel.resultObjectType {
+                Image(resultObjectType.assetName)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 64, height: 64)
+            }
+
+            VStack(spacing: 6) {
+                Text(didWin ? "YOU WIN!" : "YOU LOSE")
+                    .font(.system(size: 28, weight: .heavy, design: .rounded))
+                    .foregroundColor(didWin ? .green : .red)
+
+                if let resultObjectType = viewModel.resultObjectType {
+                    Text("All objects are \(resultObjectType.displayName).")
+                        .font(.subheadline.bold())
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(.secondary)
+                }
+            }
 
             if viewModel.phase == .won && viewModel.hasNextLevel {
-                largeButton(title: "Next Level") {
+                largeButton(title: "Next Level", fill: .green) {
                     viewModel.goToNextLevel()
                 }
             }
@@ -191,6 +213,10 @@ struct GameView: View {
         scene.didTouchArena = {
             viewModel.dismissLevelHint()
         }
+
+        scene.didTryLaunchWithoutAmmo = {
+            viewModel.warnNoAmmoIfNeeded()
+        }
     }
 
     private func loadCurrentLevel() {
@@ -215,7 +241,9 @@ struct GameView: View {
     }
 
     private func ammoChip(count: Int) -> some View {
-        HStack(spacing: 8) {
+        let isEmpty = count == 0
+
+        return HStack(spacing: 8) {
             Image("rock")
                 .resizable()
                 .scaledToFit()
@@ -226,8 +254,11 @@ struct GameView: View {
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 10)
+        .background(isEmpty ? Color.red.opacity(ammoWarningFlash ? 0.85 : 0.28) : Color.clear)
         .background(.thinMaterial)
         .cornerRadius(20)
+        .scaleEffect(ammoWarningFlash ? 1.12 : 1.0)
+        .foregroundColor(isEmpty ? .red : .primary)
     }
 
     private func smallButton(title: String, action: @escaping () -> Void) -> some View {
@@ -242,7 +273,11 @@ struct GameView: View {
         .buttonStyle(PlainButtonStyle())
     }
 
-    private func largeButton(title: String, action: @escaping () -> Void) -> some View {
+    private func largeButton(
+        title: String,
+        fill: Color = Color.accentColor.opacity(0.22),
+        action: @escaping () -> Void
+    ) -> some View {
         Button(action: action) {
             Text(title)
                 .font(.headline)
@@ -250,9 +285,21 @@ struct GameView: View {
                 .padding(.vertical, 14)
                 .background(
                     RoundedRectangle(cornerRadius: 16)
-                        .fill(Color.accentColor.opacity(0.22))
+                        .fill(fill)
                 )
         }
         .buttonStyle(PlainButtonStyle())
+    }
+
+    private func flashAmmoCounter() {
+        withAnimation(.easeInOut(duration: 0.12)) {
+            ammoWarningFlash = true
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.24) {
+            withAnimation(.easeInOut(duration: 0.12)) {
+                ammoWarningFlash = false
+            }
+        }
     }
 }

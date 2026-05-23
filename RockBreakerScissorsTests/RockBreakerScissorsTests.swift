@@ -29,9 +29,40 @@ final class RockBreakerScissorsTests: XCTestCase {
                 XCTAssertGreaterThanOrEqual(object.yPercent, 0, "Level \(level.levelNumber)")
                 XCTAssertLessThanOrEqual(object.yPercent, 1, "Level \(level.levelNumber)")
                 XCTAssertGreaterThan(object.radius, 0, "Level \(level.levelNumber)")
-                XCTAssertGreaterThan(object.velocity.length, 0, "Level \(level.levelNumber)")
+                XCTAssertGreaterThanOrEqual(object.velocity.length, 0, "Level \(level.levelNumber)")
+            }
+
+            for wall in level.walls {
+                XCTAssertGreaterThanOrEqual(wall.xPercent, 0, "Level \(level.levelNumber)")
+                XCTAssertLessThanOrEqual(wall.xPercent, 1, "Level \(level.levelNumber)")
+                XCTAssertGreaterThanOrEqual(wall.yPercent, 0, "Level \(level.levelNumber)")
+                XCTAssertLessThanOrEqual(wall.yPercent, 1, "Level \(level.levelNumber)")
+                XCTAssertGreaterThan(wall.widthPercent, 0, "Level \(level.levelNumber)")
+                XCTAssertGreaterThan(wall.heightPercent, 0, "Level \(level.levelNumber)")
             }
         }
+    }
+
+    func testEarlyLevelsUseSameLaunchAndArenaSpeeds() throws {
+        for level in LevelLibrary.allLevels where level.levelNumber < 21 {
+            for object in level.initialObjects {
+                guard object.velocity.length > 0 else { continue }
+                XCTAssertEqual(
+                    object.velocity.length,
+                    level.launchSpeed,
+                    accuracy: 0.001,
+                    "Level \(level.levelNumber) has mixed speeds before the speed mechanic is introduced"
+                )
+            }
+        }
+    }
+
+    func testNewMechanicLevelsHaveHints() throws {
+        XCTAssertNotNil(LevelLibrary.level21.introMessage)
+        XCTAssertNotNil(LevelLibrary.level22.introMessage)
+        XCTAssertNotNil(LevelLibrary.level23.introMessage)
+        XCTAssertFalse(LevelLibrary.level22.walls.isEmpty)
+        XCTAssertTrue(LevelLibrary.level23.initialObjects.contains { $0.velocity.length == 0 })
     }
 
     func testInitialObjectsDoNotOverlapOnSmallArena() throws {
@@ -78,7 +109,10 @@ final class RockBreakerScissorsTests: XCTestCase {
             LevelLibrary.level8,
             LevelLibrary.level10,
             LevelLibrary.level11,
-            LevelLibrary.level13
+            LevelLibrary.level13,
+            LevelLibrary.level15,
+            LevelLibrary.level17,
+            LevelLibrary.level18
         ]
 
         for level in levels {
