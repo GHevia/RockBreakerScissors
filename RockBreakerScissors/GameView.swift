@@ -134,7 +134,7 @@ struct GameView: View {
     private var resultOverlay: some View {
         let didWin = viewModel.phase == .won
 
-        VStack(spacing: 16) {
+        return VStack(spacing: 16) {
             if let resultObjectType = viewModel.resultObjectType {
                 Image(resultObjectType.assetName)
                     .resizable()
@@ -243,7 +243,7 @@ struct GameView: View {
     private func ammoChip(count: Int) -> some View {
         let isEmpty = count == 0
 
-        HStack(spacing: 8) {
+        return HStack(spacing: 8) {
             Image("rock")
                 .resizable()
                 .scaledToFit()
