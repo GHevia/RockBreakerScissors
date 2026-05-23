@@ -2,7 +2,6 @@ import SwiftUI
 
 struct MainMenuView: View {
     @EnvironmentObject var viewModel: GameViewModel
-    @State private var showSettings = false
     @AppStorage("useDarkMode") private var useDarkMode: Bool = true
 
     var body: some View {
@@ -22,7 +21,6 @@ struct MainMenuView: View {
                     VStack(spacing: 24) {
                         headerSection
                         actionSection
-                        levelSection
                         settingsSection
                     }
                     .padding(20)
@@ -40,8 +38,8 @@ struct MainMenuView: View {
                 .scaledToFit()
                 .frame(width: 84, height: 84)
 
-            Text("RockBreakerScissors")
-                .font(.system(size: 30, weight: .bold, design: .rounded))
+            Text("Rock Breaker Scissors")
+                .font(.system(size: 24, weight: .bold, design: .rounded))
                 .multilineTextAlignment(.center)
 
             Text("Turn everything into rock.")
@@ -53,57 +51,19 @@ struct MainMenuView: View {
 
     private var actionSection: some View {
         VStack(spacing: 14) {
-            MenuButton(title: "Play") {
+            MenuButton(title: "Continue") {
+                viewModel.startGame(at: viewModel.continueLevelIndex)
+            }
+
+            NavigationLink(destination: LevelSelectView()) {
+                MenuButtonLabel(title: "Select Level")
+            }
+            .buttonStyle(PlainButtonStyle())
+
+            MenuButton(title: "Start Over") {
                 viewModel.startGame(at: 0)
             }
-
-            MenuButton(title: "Continue") {
-                let index = min(viewModel.highestUnlockedLevel - 1,
-                                viewModel.levels.count - 1)
-                viewModel.startGame(at: index)
-            }
         }
-    }
-
-    private var levelSection: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            Text("Levels")
-                .font(.headline)
-
-            LazyVGrid(
-                columns: [GridItem(.adaptive(minimum: 68), spacing: 12)],
-                spacing: 12
-            ) {
-                ForEach(Array(viewModel.levels.indices), id: \.self) { index in
-                    let unlocked = index < viewModel.highestUnlockedLevel
-
-                    Button(action: {
-                        if unlocked {
-                            viewModel.selectLevel(index)
-                        }
-                    }) {
-                        ZStack {
-                            RoundedRectangle(cornerRadius: 16)
-                                .fill(unlocked ? Color.accentColor.opacity(0.20) : Color.gray.opacity(0.16))
-                                .frame(height: 62)
-
-                            if unlocked {
-                                Text("\(index + 1)")
-                                    .font(.headline)
-                            } else {
-                                Image(systemName: "lock.fill")
-                                    .foregroundColor(.secondary)
-                            }
-                        }
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    .disabled(!unlocked)
-                }
-            }
-        }
-        .padding(18)
-        .background(.thinMaterial)
-        .cornerRadius(22)
     }
 
     private var settingsSection: some View {
@@ -133,16 +93,80 @@ struct MenuButton: View {
 
     var body: some View {
         Button(action: action) {
-            Text(title)
-                .font(.headline)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 16)
-                .background(
-                    RoundedRectangle(cornerRadius: 18)
-                        .fill(Color.accentColor.opacity(0.22))
-                )
+            MenuButtonLabel(title: title)
         }
         .buttonStyle(PlainButtonStyle())
+    }
+}
+
+struct MenuButtonLabel: View {
+    let title: String
+
+    var body: some View {
+        Text(title)
+            .font(.headline)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 16)
+            .background(
+                RoundedRectangle(cornerRadius: 18)
+                    .fill(Color.accentColor.opacity(0.22))
+            )
+    }
+}
+
+struct LevelSelectView: View {
+    @EnvironmentObject var viewModel: GameViewModel
+
+    private let columns = [GridItem(.adaptive(minimum: 68), spacing: 12)]
+
+    var body: some View {
+        ZStack {
+            LinearGradient(
+                gradient: Gradient(colors: [
+                    Color.accentColor.opacity(0.18),
+                    Color.clear
+                ]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
+
+            ScrollView {
+                LazyVGrid(columns: columns, spacing: 12) {
+                    ForEach(Array(viewModel.levels.indices), id: \.self) { index in
+                        levelButton(for: index)
+                    }
+                }
+                .padding(20)
+            }
+        }
+        .navigationTitle("Select Level")
+    }
+
+    private func levelButton(for index: Int) -> some View {
+        let unlocked = index < viewModel.highestUnlockedLevel
+
+        return Button {
+            if unlocked {
+                viewModel.selectLevel(index)
+            }
+        } label: {
+            ZStack {
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(unlocked ? Color.accentColor.opacity(0.20) : Color.gray.opacity(0.16))
+                    .frame(height: 62)
+
+                if unlocked {
+                    Text("\(index + 1)")
+                        .font(.headline)
+                } else {
+                    Image(systemName: "lock.fill")
+                        .foregroundColor(.secondary)
+                }
+            }
+        }
+        .buttonStyle(PlainButtonStyle())
+        .disabled(!unlocked)
     }
 }
 

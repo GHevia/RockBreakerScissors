@@ -123,8 +123,9 @@ struct GameView: View {
 
     private var resultOverlay: some View {
         VStack(spacing: 16) {
-            Text(viewModel.phase == .won ? "Level Complete" : "You Lost")
-                .font(.system(size: 28, weight: .bold, design: .rounded))
+            Text(viewModel.resultTitle)
+                .font(.system(size: 24, weight: .bold, design: .rounded))
+                .multilineTextAlignment(.center)
 
             if viewModel.phase == .won && viewModel.hasNextLevel {
                 largeButton(title: "Next Level") {
@@ -153,12 +154,12 @@ struct GameView: View {
         scene.backgroundColor = colorScheme == .dark ? .black : .white
         scene.applyTheme(isDarkMode: colorScheme == .dark)
 
-        scene.onWin = {
-            viewModel.completeLevel()
+        scene.onWin = { finalObjectType in
+            viewModel.completeLevel(finalObjectType: finalObjectType)
         }
 
-        scene.onLose = {
-            viewModel.failLevel()
+        scene.onLose = { finalObjectType in
+            viewModel.failLevel(finalObjectType: finalObjectType)
         }
 
         scene.canLaunchRock = {
