@@ -4,8 +4,8 @@ import CoreGraphics
 final class GameScene: SKScene {
     // MARK: - Public callbacks
 
-    var onWin: (() -> Void)?
-    var onLose: (() -> Void)?
+    var onWin: ((ObjectType) -> Void)?
+    var onLose: ((ObjectType) -> Void)?
     var didUseAmmo: (() -> Void)?
     var canLaunchRock: (() -> Bool)?
 
@@ -26,6 +26,7 @@ final class GameScene: SKScene {
     private let launchPortRadius: CGFloat = 18
     private let aimDotCount: Int = 9
     private let aimDotSpacing: CGFloat = 22
+    private let objectScale: CGFloat = 0.80
 
     // MARK: - Theme state
 
@@ -186,14 +187,15 @@ final class GameScene: SKScene {
         velocity: CGVector,
         radius: CGFloat
     ) -> SKSpriteNode {
+        let scaledRadius = radius * objectScale
         let node = SKSpriteNode(imageNamed: assetName(for: type))
         node.name = objectName(for: type)
-        node.size = CGSize(width: radius * 2, height: radius * 2)
+        node.size = CGSize(width: scaledRadius * 2, height: scaledRadius * 2)
         node.position = position
         node.userData = NSMutableDictionary()
         node.userData?["vx"] = velocity.dx
         node.userData?["vy"] = velocity.dy
-        node.userData?["radius"] = radius
+        node.userData?["radius"] = scaledRadius
         return node
     }
 
@@ -493,13 +495,19 @@ final class GameScene: SKScene {
 
         if rockCount == objectNodes.count {
             isShowingResult = true
-            onWin?()
+            onWin?(.rock)
             return
         }
 
-        if paperCount == objectNodes.count || scissorsCount == objectNodes.count {
+        if paperCount == objectNodes.count {
             isShowingResult = true
-            onLose?()
+            onLose?(.paper)
+            return
+        }
+
+        if scissorsCount == objectNodes.count {
+            isShowingResult = true
+            onLose?(.scissors)
             return
         }
     }

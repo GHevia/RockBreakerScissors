@@ -5,32 +5,71 @@
 //  Created by Grant Hevia on 4/14/26.
 //
 
+import CoreGraphics
 import XCTest
 @testable import RockBreakerScissors
 
 final class RockBreakerScissorsTests: XCTestCase {
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+    func testLevelNumbersAreContiguous() throws {
+        let numbers = LevelLibrary.allLevels.map(\.levelNumber)
+        XCTAssertEqual(numbers, Array(1...LevelLibrary.allLevels.count))
     }
 
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
+    func testLevelsUseValidLayoutValues() throws {
+        for level in LevelLibrary.allLevels {
+            XCTAssertGreaterThan(level.startingAmmo, 0, "Level \(level.levelNumber)")
+            XCTAssertGreaterThan(level.launchSpeed, 0, "Level \(level.levelNumber)")
+            XCTAssertGreaterThan(level.launchedRockRadius, 0, "Level \(level.levelNumber)")
+            XCTAssertFalse(level.initialObjects.isEmpty, "Level \(level.levelNumber)")
 
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
-    }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+            for object in level.initialObjects {
+                XCTAssertGreaterThanOrEqual(object.xPercent, 0, "Level \(level.levelNumber)")
+                XCTAssertLessThanOrEqual(object.xPercent, 1, "Level \(level.levelNumber)")
+                XCTAssertGreaterThanOrEqual(object.yPercent, 0, "Level \(level.levelNumber)")
+                XCTAssertLessThanOrEqual(object.yPercent, 1, "Level \(level.levelNumber)")
+                XCTAssertGreaterThan(object.radius, 0, "Level \(level.levelNumber)")
+                XCTAssertGreaterThan(object.velocity.length, 0, "Level \(level.levelNumber)")
+            }
         }
     }
 
+    func testInitialObjectsDoNotOverlapOnSmallArena() throws {
+        let arenaSize = CGSize(width: 320, height: 568)
+        let arenaInset: CGFloat = 24
+        let minX = arenaInset
+        let maxX = arenaSize.width - arenaInset
+        let minY = arenaInset + 24
+        let maxY = arenaSize.height - arenaInset
+        let objectScale: CGFloat = 0.80
+
+        for level in LevelLibrary.allLevels {
+            let objects = level.initialObjects
+
+            for i in 0..<objects.count {
+                for j in (i + 1)..<objects.count {
+                    let first = objects[i]
+                    let second = objects[j]
+                    let firstPoint = CGPoint(
+                        x: minX + first.xPercent * (maxX - minX),
+                        y: minY + first.yPercent * (maxY - minY)
+                    )
+                    let secondPoint = CGPoint(
+                        x: minX + second.xPercent * (maxX - minX),
+                        y: minY + second.yPercent * (maxY - minY)
+                    )
+                    let dx = firstPoint.x - secondPoint.x
+                    let dy = firstPoint.y - secondPoint.y
+                    let distance = sqrt(dx * dx + dy * dy)
+                    let minimumDistance = (first.radius + second.radius) * objectScale
+
+                    XCTAssertGreaterThan(
+                        distance,
+                        minimumDistance,
+                        "Level \(level.levelNumber) objects \(i) and \(j) overlap at startup"
+                    )
+                }
+            }
+        }
+    }
 }

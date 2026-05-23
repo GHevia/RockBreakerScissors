@@ -12,6 +12,17 @@ enum ObjectType {
     case rock
     case paper
     case scissors
+
+    var displayName: String {
+        switch self {
+        case .rock:
+            return "rock"
+        case .paper:
+            return "paper"
+        case .scissors:
+            return "scissors"
+        }
+    }
 }
 
 final class GameObject {
