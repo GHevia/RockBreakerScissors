@@ -34,10 +34,10 @@ struct GameView: View {
                     if let message = viewModel.currentTutorialMessage,
                        viewModel.phase == .playing {
                         VStack {
-                            Spacer()
                             TutorialOverlay(message: message) {
                                 viewModel.skipTutorial()
                             }
+                            Spacer()
                         }
                     }
                 }
