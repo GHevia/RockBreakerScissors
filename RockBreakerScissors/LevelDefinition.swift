@@ -630,131 +630,155 @@ enum LevelLibrary {
 
     static let level17 = LevelDefinition(
         levelNumber: 17,
-        startingAmmo: 3,
-        launchSpeed: 220,
+        startingAmmo: 6,
+        launchSpeed: 230,
         launchedRockRadius: 20,
         initialObjects: [
-            InitialObjectDefinition(type: .rock, xPercent: 0.18, yPercent: 0.22, angleDegrees: 10, speed: 220, radius: 20),
-            InitialObjectDefinition(type: .paper, xPercent: 0.38, yPercent: 0.36, angleDegrees: 10, speed: 220, radius: 20),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.60, yPercent: 0.50, angleDegrees: 10, speed: 220, radius: 20),
-            InitialObjectDefinition(type: .paper, xPercent: 0.82, yPercent: 0.66, angleDegrees: 10, speed: 220, radius: 20),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.28, yPercent: 0.82, angleDegrees: 10, speed: 220, radius: 20)
+            // Concept: first internal wall. No starting rocks, so the player must act.
+            InitialObjectDefinition(type: .paper, xPercent: 0.20, yPercent: 0.26, angleDegrees: 25, speed: 155, radius: 20),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.80, yPercent: 0.30, angleDegrees: 155, speed: 155, radius: 20),
+            InitialObjectDefinition(type: .paper, xPercent: 0.24, yPercent: 0.76, angleDegrees: 335, speed: 155, radius: 20),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.76, yPercent: 0.80, angleDegrees: 205, speed: 155, radius: 20)
         ],
-        introMessage: "Watch the starting rock. It can help or hurt depending on timing."
+        walls: [
+            ArenaWallDefinition(xPercent: 0.50, yPercent: 0.52, widthPercent: 0.10, heightPercent: 0.34)
+        ],
+        introMessage: "New concept: walls"
     )
 
     static let level18 = LevelDefinition(
         levelNumber: 18,
-        startingAmmo: 3,
-        launchSpeed: 220,
+        startingAmmo: 6,
+        launchSpeed: 232,
         launchedRockRadius: 20,
         initialObjects: [
-            InitialObjectDefinition(type: .scissors, xPercent: 0.16, yPercent: 0.20, angleDegrees: 325, speed: 220, radius: 20),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.38, yPercent: 0.30, angleDegrees: 325, speed: 220, radius: 20),
-            InitialObjectDefinition(type: .rock, xPercent: 0.62, yPercent: 0.40, angleDegrees: 325, speed: 220, radius: 20),
-            InitialObjectDefinition(type: .paper, xPercent: 0.84, yPercent: 0.50, angleDegrees: 325, speed: 220, radius: 20),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.28, yPercent: 0.72, angleDegrees: 325, speed: 220, radius: 20),
-            InitialObjectDefinition(type: .rock, xPercent: 0.58, yPercent: 0.84, angleDegrees: 325, speed: 220, radius: 20)
+            // Same idea, but with a horizontal shelf that rewards bank shots.
+            InitialObjectDefinition(type: .paper, xPercent: 0.18, yPercent: 0.22, angleDegrees: 30, speed: 160, radius: 20),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.82, yPercent: 0.26, angleDegrees: 150, speed: 160, radius: 20),
+            InitialObjectDefinition(type: .paper, xPercent: 0.20, yPercent: 0.78, angleDegrees: 330, speed: 160, radius: 20),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.80, yPercent: 0.82, angleDegrees: 210, speed: 160, radius: 20)
+        ],
+        walls: [
+            ArenaWallDefinition(xPercent: 0.50, yPercent: 0.50, widthPercent: 0.48, heightPercent: 0.06)
         ]
+        // introMessage: "Try using the wall as a shelf: sometimes the safest shot is a bounce, not a straight line."
     )
 
     static let level19 = LevelDefinition(
         levelNumber: 19,
-        startingAmmo: 2,
-        launchSpeed: 230,
+        startingAmmo: 5,
+        launchSpeed: 235,
         launchedRockRadius: 20,
         initialObjects: [
-            InitialObjectDefinition(type: .scissors, xPercent: 0.16, yPercent: 0.30, angleDegrees: 8, speed: 230, radius: 20),
-            InitialObjectDefinition(type: .paper, xPercent: 0.38, yPercent: 0.18, angleDegrees: 76, speed: 230, radius: 20),
-            InitialObjectDefinition(type: .paper, xPercent: 0.64, yPercent: 0.82, angleDegrees: 258, speed: 230, radius: 20),
-            InitialObjectDefinition(type: .paper, xPercent: 0.84, yPercent: 0.68, angleDegrees: 188, speed: 230, radius: 20),
-            InitialObjectDefinition(type: .rock, xPercent: 0.50, yPercent: 0.50, angleDegrees: 24, speed: 230, radius: 20)
+            // Two posts create simple side lanes.
+            InitialObjectDefinition(type: .paper, xPercent: 0.16, yPercent: 0.25, angleDegrees: 18, speed: 165, radius: 20),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.84, yPercent: 0.32, angleDegrees: 162, speed: 165, radius: 20),
+            InitialObjectDefinition(type: .paper, xPercent: 0.22, yPercent: 0.72, angleDegrees: 342, speed: 165, radius: 20),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.78, yPercent: 0.78, angleDegrees: 198, speed: 165, radius: 20)
         ],
-        introMessage: "Ammo is tighter now. Wait for the board to open up."
+        walls: [
+            ArenaWallDefinition(xPercent: 0.36, yPercent: 0.54, widthPercent: 0.08, heightPercent: 0.38),
+            ArenaWallDefinition(xPercent: 0.64, yPercent: 0.54, widthPercent: 0.08, heightPercent: 0.38)
+        ]
+        // introMessage: "Some wall layouts create lanes. Aim through the open space instead of fighting the walls."
     )
 
     static let level20 = LevelDefinition(
         levelNumber: 20,
-        startingAmmo: 2,
-        launchSpeed: 230,
+        startingAmmo: 5,
+        launchSpeed: 238,
         launchedRockRadius: 20,
         initialObjects: [
-            InitialObjectDefinition(type: .rock, xPercent: 0.18, yPercent: 0.18, angleDegrees: 42, speed: 230, radius: 20),
-            InitialObjectDefinition(type: .paper, xPercent: 0.82, yPercent: 0.22, angleDegrees: 156, speed: 230, radius: 20),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.22, yPercent: 0.48, angleDegrees: 348, speed: 230, radius: 20),
-            InitialObjectDefinition(type: .paper, xPercent: 0.78, yPercent: 0.58, angleDegrees: 204, speed: 230, radius: 20),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.34, yPercent: 0.82, angleDegrees: 294, speed: 230, radius: 20),
-            InitialObjectDefinition(type: .paper, xPercent: 0.66, yPercent: 0.84, angleDegrees: 246, speed: 230, radius: 20),
-            InitialObjectDefinition(type: .paper, xPercent: 0.1, yPercent: 0.1, angleDegrees: 0, speed: 230, radius: 20),
-            InitialObjectDefinition(type: .rock, xPercent: 0.1, yPercent: 0.9, angleDegrees: 0, speed: 230, radius: 20)
+            // A center divider with a gap. The gap gives a reliable path to both halves.
+            InitialObjectDefinition(type: .paper, xPercent: 0.18, yPercent: 0.22, angleDegrees: 20, speed: 170, radius: 20),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.82, yPercent: 0.22, angleDegrees: 160, speed: 170, radius: 20),
+            InitialObjectDefinition(type: .paper, xPercent: 0.18, yPercent: 0.82, angleDegrees: 340, speed: 170, radius: 20),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.82, yPercent: 0.82, angleDegrees: 200, speed: 170, radius: 20)
+        ],
+        walls: [
+            ArenaWallDefinition(xPercent: 0.50, yPercent: 0.30, widthPercent: 0.08, heightPercent: 0.26),
+            ArenaWallDefinition(xPercent: 0.50, yPercent: 0.76, widthPercent: 0.08, heightPercent: 0.28)
         ]
+        // introMessage: "Walls can split the arena. Use gaps to move rocks between regions."
     )
 
     static let level21 = LevelDefinition(
         levelNumber: 21,
-        startingAmmo: 3,
-        launchSpeed: 270,
+        startingAmmo: 5,
+        launchSpeed: 240,
         launchedRockRadius: 20,
         initialObjects: [
-            InitialObjectDefinition(type: .paper, xPercent: 0.16, yPercent: 0.24, angleDegrees: 18, speed: 150, radius: 20),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.84, yPercent: 0.32, angleDegrees: 162, speed: 150, radius: 20),
-            InitialObjectDefinition(type: .paper, xPercent: 0.24, yPercent: 0.70, angleDegrees: 342, speed: 150, radius: 20),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.76, yPercent: 0.82, angleDegrees: 198, speed: 150, radius: 20),
-            InitialObjectDefinition(type: .rock, xPercent: 0.50, yPercent: 0.52, angleDegrees: 90, speed: 140, radius: 20),
-             InitialObjectDefinition(type: .rock, xPercent: 0.90, yPercent: 0.92, angleDegrees: 0, speed: 140, radius: 20)
+            // An L-shaped obstacle teaches corner banking.
+            InitialObjectDefinition(type: .paper, xPercent: 0.18, yPercent: 0.26, angleDegrees: 35, speed: 175, radius: 20),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.82, yPercent: 0.30, angleDegrees: 145, speed: 175, radius: 20),
+            InitialObjectDefinition(type: .paper, xPercent: 0.24, yPercent: 0.76, angleDegrees: 325, speed: 175, radius: 20),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.76, yPercent: 0.82, angleDegrees: 215, speed: 175, radius: 20),
+            InitialObjectDefinition(type: .paper, xPercent: 0.50, yPercent: 0.66, angleDegrees: 180, speed: 140, radius: 20)
         ],
-        introMessage: "Fired rocks can be faster than the objects already in the arena."
+        walls: [
+            ArenaWallDefinition(xPercent: 0.46, yPercent: 0.48, widthPercent: 0.08, heightPercent: 0.36),
+            ArenaWallDefinition(xPercent: 0.58, yPercent: 0.64, widthPercent: 0.32, heightPercent: 0.06)
+        ]
+        // introMessage: "Corner walls are trickier. A rock that bounces once can reach places a direct shot cannot."
     )
 
     static let level22 = LevelDefinition(
         levelNumber: 22,
-        startingAmmo: 3,
-        launchSpeed: 270,
+        startingAmmo: 4,
+        launchSpeed: 245,
         launchedRockRadius: 20,
         initialObjects: [
-            InitialObjectDefinition(type: .rock, xPercent: 0.1, yPercent: 0.1, angleDegrees: 60, speed: 150, radius: 20),
-            InitialObjectDefinition(type: .paper, xPercent: 0.2, yPercent: 0.2, angleDegrees: 60, speed: 150, radius: 20),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.3, yPercent: 0.3, angleDegrees: 60, speed: 150, radius: 20),
-            InitialObjectDefinition(type: .rock, xPercent: 0.1, yPercent: 0.7, angleDegrees: 240, speed: 150, radius: 20),
-            InitialObjectDefinition(type: .paper, xPercent: 0.2, yPercent: 0.8, angleDegrees: 240, speed: 140, radius: 20),
-             InitialObjectDefinition(type: .scissors, xPercent: 0.3, yPercent: 0.9, angleDegrees: 240, speed: 140, radius: 20)
+            // Narrower gate, but still generous enough for a controlled shot.
+            InitialObjectDefinition(type: .paper, xPercent: 0.18, yPercent: 0.22, angleDegrees: 0, speed: 180, radius: 20),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.82, yPercent: 0.28, angleDegrees: 180, speed: 180, radius: 20),
+            InitialObjectDefinition(type: .paper, xPercent: 0.20, yPercent: 0.76, angleDegrees: 0, speed: 180, radius: 20),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.80, yPercent: 0.82, angleDegrees: 180, speed: 180, radius: 20)
+        ],
+        walls: [
+            ArenaWallDefinition(xPercent: 0.38, yPercent: 0.52, widthPercent: 0.08, heightPercent: 0.44),
+            ArenaWallDefinition(xPercent: 0.62, yPercent: 0.52, widthPercent: 0.08, heightPercent: 0.44)
         ]
+        // introMessage: "Gate shots: wait until a target drifts into the lane, then send a rock through."
     )
 
     static let level23 = LevelDefinition(
         levelNumber: 23,
-        startingAmmo: 3,
-        launchSpeed: 245,
+        startingAmmo: 4,
+        launchSpeed: 248,
         launchedRockRadius: 20,
         initialObjects: [
-            InitialObjectDefinition(type: .paper, xPercent: 0.16, yPercent: 0.22, angleDegrees: 24, speed: 185, radius: 20),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.84, yPercent: 0.30, angleDegrees: 156, speed: 185, radius: 20),
+            // Wall review: posts plus a shelf. No starting rocks means no automatic win.
+            InitialObjectDefinition(type: .paper, xPercent: 0.15, yPercent: 0.24, angleDegrees: 24, speed: 185, radius: 20),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.85, yPercent: 0.32, angleDegrees: 156, speed: 185, radius: 20),
             InitialObjectDefinition(type: .paper, xPercent: 0.20, yPercent: 0.72, angleDegrees: 336, speed: 185, radius: 20),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.80, yPercent: 0.82, angleDegrees: 204, speed: 185, radius: 20)
+            InitialObjectDefinition(type: .scissors, xPercent: 0.80, yPercent: 0.84, angleDegrees: 204, speed: 185, radius: 20),
+            InitialObjectDefinition(type: .paper, xPercent: 0.50, yPercent: 0.22, angleDegrees: 90, speed: 145, radius: 20)
         ],
         walls: [
-            ArenaWallDefinition(xPercent: 0.50, yPercent: 0.44, widthPercent: 0.12, heightPercent: 0.34),
-            ArenaWallDefinition(xPercent: 0.50, yPercent: 0.76, widthPercent: 0.42, heightPercent: 0.06)
-        ],
-        introMessage: "Walls deflect both fired rocks and moving objects."
+            ArenaWallDefinition(xPercent: 0.34, yPercent: 0.54, widthPercent: 0.08, heightPercent: 0.34),
+            ArenaWallDefinition(xPercent: 0.66, yPercent: 0.54, widthPercent: 0.08, heightPercent: 0.34),
+            ArenaWallDefinition(xPercent: 0.50, yPercent: 0.70, widthPercent: 0.34, heightPercent: 0.06)
+        ]
+        // introMessage: "Wall review. You now need to combine timing, lanes, and bank shots."
     )
 
 
 
     static let level24 = LevelDefinition(
         levelNumber: 24,
-        startingAmmo: 5,
+        startingAmmo: 6,
         launchSpeed: 230,
         launchedRockRadius: 20,
         initialObjects: [
-            // Concept: stationary targets
+            // Concept: stationary targets. Fixed scissors are simple rock targets; moving pieces prevent the board from being static.
             InitialObjectDefinition(type: .scissors, xPercent: 0.18, yPercent: 0.26, angleDegrees: 0, speed: 0, radius: 20),
             InitialObjectDefinition(type: .scissors, xPercent: 0.82, yPercent: 0.30, angleDegrees: 0, speed: 0, radius: 20),
             InitialObjectDefinition(type: .scissors, xPercent: 0.28, yPercent: 0.74, angleDegrees: 0, speed: 0, radius: 20),
             InitialObjectDefinition(type: .scissors, xPercent: 0.72, yPercent: 0.78, angleDegrees: 0, speed: 0, radius: 20),
-            InitialObjectDefinition(type: .paper, xPercent: 0.50, yPercent: 0.18, angleDegrees: 90, speed: 0, radius: 20)
+            InitialObjectDefinition(type: .paper, xPercent: 0.50, yPercent: 0.20, angleDegrees: 25, speed: 110, radius: 20),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.50, yPercent: 0.56, angleDegrees: 270, speed: 110, radius: 20)
         ],
-        introMessage: "Objects can be stationary targets. Use them as anchors for chain reactions."
+        introMessage: "Objects can be stationary targets."
     )
 
     static let level25 = LevelDefinition(
@@ -778,29 +802,30 @@ enum LevelLibrary {
         launchSpeed: 240,
         launchedRockRadius: 20,
         initialObjects: [
-            // Static scissors plus a moving rock seed
+            // Static scissors plus moving papers. No starting rock, so the player has to create rock control.
             InitialObjectDefinition(type: .scissors, xPercent: 0.20, yPercent: 0.22, angleDegrees: 0, speed: 0, radius: 20),
             InitialObjectDefinition(type: .scissors, xPercent: 0.80, yPercent: 0.22, angleDegrees: 0, speed: 0, radius: 20),
-            InitialObjectDefinition(type: .paper, xPercent: 0.24, yPercent: 0.62, angleDegrees: 20, speed: 185, radius: 20),
-            InitialObjectDefinition(type: .paper, xPercent: 0.76, yPercent: 0.70, angleDegrees: 160, speed: 185, radius: 20),
-            InitialObjectDefinition(type: .rock, xPercent: 0.50, yPercent: 0.48, angleDegrees: 90, speed: 120, radius: 20)
+            InitialObjectDefinition(type: .paper, xPercent: 0.24, yPercent: 0.62, angleDegrees: 20, speed: 175, radius: 20),
+            InitialObjectDefinition(type: .paper, xPercent: 0.76, yPercent: 0.70, angleDegrees: 160, speed: 175, radius: 20),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.50, yPercent: 0.48, angleDegrees: 90, speed: 130, radius: 20)
         ]
     )
 
     static let level27 = LevelDefinition(
         levelNumber: 27,
-        startingAmmo: 3,
+        startingAmmo: 6,
         launchSpeed: 245,
         launchedRockRadius: 20,
         initialObjects: [
-            // Stationary target cluster with tighter ammo
-            InitialObjectDefinition(type: .paper, xPercent: 0.14, yPercent: 0.28, angleDegrees: 0, speed: 0, radius: 20),
-            InitialObjectDefinition(type: .paper, xPercent: 0.86, yPercent: 0.34, angleDegrees: 0, speed: 0, radius: 20),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.24, yPercent: 0.72, angleDegrees: 335, speed: 190, radius: 20),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.76, yPercent: 0.82, angleDegrees: 205, speed: 190, radius: 20),
-            InitialObjectDefinition(type: .rock, xPercent: 0.50, yPercent: 0.54, angleDegrees: 75, speed: 140, radius: 20),
-            InitialObjectDefinition(type: .paper, xPercent: 0.50, yPercent: 0.18, angleDegrees: 0, speed: 0, radius: 20)
-        ]
+            // Softer stationary-target challenge. The old version could strand too many papers.
+            InitialObjectDefinition(type: .scissors, xPercent: 0.18, yPercent: 0.24, angleDegrees: 0, speed: 0, radius: 20),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.82, yPercent: 0.30, angleDegrees: 0, speed: 0, radius: 20),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.28, yPercent: 0.74, angleDegrees: 0, speed: 0, radius: 20),
+            InitialObjectDefinition(type: .paper, xPercent: 0.72, yPercent: 0.78, angleDegrees: 210, speed: 145, radius: 20),
+            InitialObjectDefinition(type: .paper, xPercent: 0.50, yPercent: 0.18, angleDegrees: 90, speed: 145, radius: 20),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.50, yPercent: 0.56, angleDegrees: 270, speed: 120, radius: 20)
+        ],
+        introMessage: "Stationary target review. Convert the fixed scissors first, then use the moving pieces to finish the papers."
     )
 
     static let level28 = LevelDefinition(
