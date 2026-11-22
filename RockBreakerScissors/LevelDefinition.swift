@@ -211,211 +211,58 @@ enum LevelLibrary {
     static let level1 = LevelDefinition(
         levelNumber: 1,
         startingAmmo: 8,
-        launchSpeed: 150,
-        launchedRockRadius: 20,
+        launchSpeed: 110,
+        launchedRockRadius: 22,
         initialObjects: [
-            InitialObjectDefinition(
-                type: .paper,
-                xPercent: 0.20,
-                yPercent: 0.78,
-                directionDX: 3,
-                directionDY: -2,
-                speed: 150,
-                radius: 20
-            ),
-            InitialObjectDefinition(
-                type: .scissors,
-                xPercent: 0.78,
-                yPercent: 0.35,
-                directionDX: -2,
-                directionDY: 2,
-                speed: 150,
-                radius: 20
-            )
+            InitialObjectDefinition(type: .scissors, xPercent: 0.50, yPercent: 0.60, angleDegrees: 0, speed: 0, radius: 22)
         ]
     )
 
     static let level2 = LevelDefinition(
         levelNumber: 2,
-        startingAmmo: 7,
-        launchSpeed: 200,
-        launchedRockRadius: 20,
+        startingAmmo: 8,
+        launchSpeed: 110,
+        launchedRockRadius: 22,
         initialObjects: [
-            InitialObjectDefinition(
-                type: .paper,
-                xPercent: 0.20,
-                yPercent: 0.78,
-                angleDegrees: -25,
-                speed: 200,
-                radius: 20
-            ),
-            InitialObjectDefinition(
-                type: .paper,
-                xPercent: 0.65,
-                yPercent: 0.62,
-                angleDegrees: 160,
-                speed: 200,
-                radius: 20
-            ),
-            InitialObjectDefinition(
-                type: .scissors,
-                xPercent: 0.78,
-                yPercent: 0.30,
-                angleDegrees: 120,
-                speed: 200,
-                radius: 20
-            )
+            InitialObjectDefinition(type: .scissors, xPercent: 0.28, yPercent: 0.55, angleDegrees: 0, speed: 0, radius: 22),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.72, yPercent: 0.72, angleDegrees: 0, speed: 0, radius: 22)
         ]
     )
 
     static let level3 = LevelDefinition(
         levelNumber: 3,
-        startingAmmo: 6,
-        launchSpeed: 200,
-        launchedRockRadius: 20,
+        startingAmmo: 8,
+        launchSpeed: 110,
+        launchedRockRadius: 22,
         initialObjects: [
-            InitialObjectDefinition(
-                type: .paper,
-                xPercent: 0.18,
-                yPercent: 0.78,
-                angleDegrees: 30,
-                speed: 200,
-                radius: 20
-            ),
-            InitialObjectDefinition(
-                type: .paper,
-                xPercent: 0.78,
-                yPercent: 0.78,
-                angleDegrees: 210,
-                speed: 200,
-                radius: 20
-            ),
-            InitialObjectDefinition(
-                type: .scissors,
-                xPercent: 0.30,
-                yPercent: 0.35,
-                angleDegrees: 40,
-                speed: 200,
-                radius: 20
-            ),
-            InitialObjectDefinition(
-                type: .scissors,
-                xPercent: 0.72,
-                yPercent: 0.32,
-                angleDegrees: 200,
-                speed: 200,
-                radius: 20
-            )
+            InitialObjectDefinition(type: .scissors, xPercent: 0.25, yPercent: 0.55, angleDegrees: 0, speed: 110, radius: 22),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.75, yPercent: 0.78, angleDegrees: 180, speed: 110, radius: 22)
         ]
     )
 
     static let level4 = LevelDefinition(
         levelNumber: 4,
-        startingAmmo: 6,
-        launchSpeed: 200,
-        launchedRockRadius: 20,
+        startingAmmo: 10,
+        launchSpeed: 100,
+        launchedRockRadius: 22,
         initialObjects: [
-            InitialObjectDefinition(
-                type: .scissors,
-                xPercent: 0.2,
-                yPercent: 0.2,
-                directionDX: 0,
-                directionDY: 1,
-                speed: 200,
-                radius: 20
-            ),
-            InitialObjectDefinition(
-                type: .scissors,
-                xPercent: 0.4,
-                yPercent: 0.8,
-                directionDX: 0,
-                directionDY: -1,
-                speed: 200,
-                radius: 20
-            ),
-            InitialObjectDefinition(
-                type: .paper,
-                xPercent: 0.6,
-                yPercent: 0.2,
-                directionDX: 0,
-                directionDY: 1,
-                speed: 200,
-                radius: 20
-            ),
-            InitialObjectDefinition(
-                type: .paper,
-                xPercent: 0.8,
-                yPercent: 0.8,
-                directionDX: 0,
-                directionDY: -1,
-                speed: 200,
-                radius: 20
-            ),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.20, yPercent: 0.72, angleDegrees: 0, speed: 100, radius: 22),
+            InitialObjectDefinition(type: .paper, xPercent: 0.65, yPercent: 0.72, angleDegrees: 0, speed: 0, radius: 22)
         ]
     )
-    
+
     static let level5 = LevelDefinition(
         levelNumber: 5,
-        startingAmmo: 4,
-        launchSpeed: 200,
-        launchedRockRadius: 20,
+        startingAmmo: 10,
+        launchSpeed: 120,
+        launchedRockRadius: 22,
         initialObjects: [
-            InitialObjectDefinition(
-                type: .scissors,
-                xPercent: 0.2,
-                yPercent: 0.2,
-                directionDX: 1,
-                directionDY: 0,
-                speed: 200,
-                radius: 20
-            ),
-            InitialObjectDefinition(
-                type: .scissors,
-                xPercent: 0.3,
-                yPercent: 0.3,
-                directionDX: 1,
-                directionDY: 0,
-                speed: 200,
-                radius: 20
-            ),
-            InitialObjectDefinition(
-                type: .scissors,
-                xPercent: 0.4,
-                yPercent: 0.4,
-                directionDX: 1,
-                directionDY: 0,
-                speed: 200,
-                radius: 20
-            ),
-            InitialObjectDefinition(
-                type: .paper,
-                xPercent: 0.7,
-                yPercent: 0.7,
-                directionDX: -1,
-                directionDY: 0,
-                speed: 200,
-                radius: 20
-            ),
-            InitialObjectDefinition(
-                type: .paper,
-                xPercent: 0.8,
-                yPercent: 0.8,
-                directionDX: -1,
-                directionDY: 0,
-                speed: 200,
-                radius: 20
-            ),
-            InitialObjectDefinition(
-                type: .paper,
-                xPercent: 0.9,
-                yPercent: 0.9,
-                directionDX: -1,
-                directionDY: 0,
-                speed: 200,
-                radius: 20
-            ),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.18, yPercent: 0.72, angleDegrees: 0, speed: 120, radius: 22),
+            InitialObjectDefinition(type: .paper, xPercent: 0.42, yPercent: 0.72, angleDegrees: 0, speed: 0, radius: 22),
+            InitialObjectDefinition(type: .paper, xPercent: 0.72, yPercent: 0.72, angleDegrees: 0, speed: 0, radius: 22)
         ]
     )
+
     static let level6 = LevelDefinition(
         levelNumber: 6,
         startingAmmo: 5,
@@ -2105,46 +1952,33 @@ enum LevelLibrary {
 
     static let level99 = LevelDefinition(
         levelNumber: 99,
-        startingAmmo: 2,
-        launchSpeed: 315,
-        launchedRockRadius: 11,
+        startingAmmo: 6,
+        launchSpeed: 240,
+        launchedRockRadius: 22,
         initialObjects: [
-            // final mixed
-            InitialObjectDefinition(type: .paper, xPercent: 0.12, yPercent: 0.22, angleDegrees: 31, speed: 315, radius: 11),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.28, yPercent: 0.36, angleDegrees: 149, speed: 315, radius: 11),
-            InitialObjectDefinition(type: .paper, xPercent: 0.48, yPercent: 0.28, angleDegrees: 287, speed: 290, radius: 11),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.68, yPercent: 0.52, angleDegrees: 205, speed: 315, radius: 11),
-            InitialObjectDefinition(type: .paper, xPercent: 0.86, yPercent: 0.76, angleDegrees: 118, speed: 290, radius: 22),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.38, yPercent: 0.84, angleDegrees: 351, speed: 315, radius: 11),
-            InitialObjectDefinition(type: .rock, xPercent: 0.50, yPercent: 0.62, angleDegrees: 90, speed: 100, radius: 11)
+            InitialObjectDefinition(type: .paper, xPercent: 0.32, yPercent: 0.75, angleDegrees: 0, speed: 0, radius: 18),
+            InitialObjectDefinition(type: .paper, xPercent: 0.68, yPercent: 0.75, angleDegrees: 0, speed: 0, radius: 18),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.14, yPercent: 0.75, angleDegrees: 0, speed: 180, radius: 18),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.86, yPercent: 0.75, angleDegrees: 180, speed: 180, radius: 18),
+            InitialObjectDefinition(type: .rock, xPercent: 0.50, yPercent: 0.25, angleDegrees: 0, speed: 0, radius: 18)
         ],
-        walls: [
-            ArenaWallDefinition(xPercent: 0.50, yPercent: 0.42, widthPercent: 0.38, heightPercent: 0.06),
-            ArenaWallDefinition(xPercent: 0.30, yPercent: 0.68, widthPercent: 0.08, heightPercent: 0.30),
-            ArenaWallDefinition(xPercent: 0.70, yPercent: 0.68, widthPercent: 0.08, heightPercent: 0.30)
-        ]
+        introMessage: "Let the scissors sweep up the paper, then aim for the upper lane."
     )
 
     static let level100 = LevelDefinition(
         levelNumber: 100,
-        startingAmmo: 3,
-        launchSpeed: 315,
-        launchedRockRadius: 11,
+        startingAmmo: 7,
+        launchSpeed: 260,
+        launchedRockRadius: 22,
         initialObjects: [
-            // level 100
-            InitialObjectDefinition(type: .paper, xPercent: 0.14, yPercent: 0.24, angleDegrees: 18, speed: 315, radius: 11),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.86, yPercent: 0.30, angleDegrees: 162, speed: 315, radius: 11),
-            InitialObjectDefinition(type: .paper, xPercent: 0.22, yPercent: 0.58, angleDegrees: 318, speed: 295, radius: 20),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.78, yPercent: 0.68, angleDegrees: 222, speed: 315, radius: 11),
-            InitialObjectDefinition(type: .paper, xPercent: 0.34, yPercent: 0.86, angleDegrees: 0, speed: 0, radius: 11),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.66, yPercent: 0.86, angleDegrees: 0, speed: 0, radius: 11),
-            InitialObjectDefinition(type: .rock, xPercent: 0.50, yPercent: 0.22, angleDegrees: 90, speed: 100, radius: 11)
+            InitialObjectDefinition(type: .paper, xPercent: 0.35, yPercent: 0.78, angleDegrees: 0, speed: 0, radius: 18),
+            InitialObjectDefinition(type: .paper, xPercent: 0.65, yPercent: 0.78, angleDegrees: 0, speed: 0, radius: 18),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.15, yPercent: 0.78, angleDegrees: 0, speed: 210, radius: 18),
+            InitialObjectDefinition(type: .paper, xPercent: 0.50, yPercent: 0.50, angleDegrees: 0, speed: 0, radius: 18),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.82, yPercent: 0.50, angleDegrees: 180, speed: 190, radius: 18),
+            InitialObjectDefinition(type: .rock, xPercent: 0.50, yPercent: 0.20, angleDegrees: 0, speed: 0, radius: 18)
         ],
-        walls: [
-            ArenaWallDefinition(xPercent: 0.30, yPercent: 0.48, widthPercent: 0.08, heightPercent: 0.34),
-            ArenaWallDefinition(xPercent: 0.50, yPercent: 0.64, widthPercent: 0.34, heightPercent: 0.06),
-            ArenaWallDefinition(xPercent: 0.70, yPercent: 0.48, widthPercent: 0.08, heightPercent: 0.34),
-            ArenaWallDefinition(xPercent: 0.50, yPercent: 0.38, widthPercent: 0.28, heightPercent: 0.06)
-        ]
+        introMessage: "Clear the paper in both lanes before turning the remaining scissors into rock."
     )
+
 }

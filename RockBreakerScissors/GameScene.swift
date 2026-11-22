@@ -8,9 +8,7 @@ final class GameScene: SKScene {
     var onLose: ((ObjectType) -> Void)?
     var didUseAmmo: (() -> Void)?
     var canLaunchRock: (() -> Bool)?
-    var didStartAiming: (() -> Void)?
-    var didLaunchRock: (() -> Void)?
-    var didConvertObject: (() -> Void)?
+    var isGameplayPaused = false
     var didTouchArena: (() -> Void)?
     var didTryLaunchWithoutAmmo: (() -> Void)?
 
@@ -287,14 +285,13 @@ final class GameScene: SKScene {
 
         node.texture = SKTexture(imageNamed: assetName(for: type))
         node.name = objectName(for: type)
-        didConvertObject?()
     }
 
     // MARK: - Touch handling
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first else { return }
-        guard isShowingResult == false else { return }
+        guard !isShowingResult, !isGameplayPaused else { return }
         guard canLaunchRock?() ?? true else {
             didTryLaunchWithoutAmmo?()
             return
@@ -304,13 +301,12 @@ final class GameScene: SKScene {
         touchStartPoint = location
         updateAimDots(from: launcherPosition, toward: location)
         didTouchArena?()
-        didStartAiming?()
     }
 
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first else { return }
         guard touchStartPoint != nil else { return }
-        guard isShowingResult == false else { return }
+        guard !isShowingResult, !isGameplayPaused else { return }
 
         let location = touch.location(in: self)
         updateAimDots(from: launcherPosition, toward: location)
@@ -322,7 +318,7 @@ final class GameScene: SKScene {
             touchStartPoint = nil
             return
         }
-        guard isShowingResult == false else {
+        guard !isShowingResult, !isGameplayPaused else {
             clearAimDots()
             touchStartPoint = nil
             return
@@ -332,24 +328,24 @@ final class GameScene: SKScene {
             touchStartPoint = nil
             return
         }
-        guard let level = currentLevel else {
-            clearAimDots()
-            touchStartPoint = nil
-            return
-        }
+        guard touchStartPoint != nil else { return }
+        launchRock(toward: touch.location(in: self))
+        clearAimDots()
+        touchStartPoint = nil
+    }
 
-        let location = touch.location(in: self)
+    // Shared by touch input and deterministic gameplay checks.
+    func launchRock(toward location: CGPoint) {
+        guard !isShowingResult, !isGameplayPaused,
+              canLaunchRock?() ?? true,
+              let level = currentLevel else { return }
         let direction = CGVector(
             dx: location.x - launcherPosition.x,
             dy: location.y - launcherPosition.y
         )
 
         let length = sqrt(direction.dx * direction.dx + direction.dy * direction.dy)
-        guard length > 0 else {
-            clearAimDots()
-            touchStartPoint = nil
-            return
-        }
+        guard length > 0 else { return }
 
         let vx = (direction.dx / length) * level.launchSpeed
         let vy = (direction.dy / length) * level.launchSpeed
@@ -364,10 +360,6 @@ final class GameScene: SKScene {
         objectNodes.append(rockNode)
 
         didUseAmmo?()
-        didLaunchRock?()
-
-        clearAimDots()
-        touchStartPoint = nil
     }
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -412,7 +404,7 @@ final class GameScene: SKScene {
     // MARK: - Update loop
 
     override func update(_ currentTime: TimeInterval) {
-        guard currentLevel != nil else { return }
+        guard currentLevel != nil, !isGameplayPaused, !isShowingResult else { return }
         guard size.width > 0 && size.height > 0 else { return }
 
         let dt: CGFloat = 1.0 / 60.0
@@ -577,7 +569,7 @@ final class GameScene: SKScene {
     // MARK: - Win/loss detection
 
     private func evaluateGameState() {
-        guard isShowingResult == false else { return }
+        guard !isShowingResult, !isGameplayPaused else { return }
         guard objectNodes.isEmpty == false else { return }
 
         var rockCount = 0
@@ -609,7 +601,8 @@ final class GameScene: SKScene {
             return
         }
 
-        if scissorsCount == objectNodes.count {
+        // Scissors can still be beaten by the rocks remaining in the launcher.
+        if scissorsCount == objectNodes.count && !(canLaunchRock?() ?? true) {
             isShowingResult = true
             onLose?(.scissors)
             return

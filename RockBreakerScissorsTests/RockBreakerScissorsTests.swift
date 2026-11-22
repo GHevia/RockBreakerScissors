@@ -124,6 +124,126 @@ final class RockBreakerScissorsTests: XCTestCase {
         }
     }
 
+    func testTutorialIsPlayerPacedAndRemembersAcknowledgement() {
+        let suite = "TutorialTests.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suite)!
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let model = GameViewModel(defaults: defaults)
+        model.startGame(at: 0)
+        XCTAssertTrue(model.showTutorial)
+        let firstMessage = model.currentTutorialMessage
+        model.startTutorialIfNeeded()
+        XCTAssertEqual(model.currentTutorialMessage, firstMessage)
+        model.advanceTutorial()
+        XCTAssertNotEqual(model.currentTutorialMessage, firstMessage)
+        XCTAssertTrue(model.showTutorial)
+        model.advanceTutorial()
+        XCTAssertFalse(model.showTutorial)
+        model.restartLevel()
+        model.startTutorialIfNeeded()
+        XCTAssertFalse(model.showTutorial)
+
+        let reopened = GameViewModel(defaults: defaults)
+        reopened.startGame(at: 0)
+        XCTAssertFalse(reopened.showTutorial)
+        reopened.completeLevel(finalObjectType: .rock)
+        reopened.goToNextLevel()
+        XCTAssertTrue(reopened.showTutorial)
+        reopened.skipTutorial()
+        reopened.restartLevel()
+        XCTAssertFalse(reopened.showTutorial)
+        reopened.resetProgress()
+        reopened.startGame(at: 0)
+        XCTAssertTrue(reopened.showTutorial)
+    }
+
+    func testExistingProgressSkipsCompletedLessons() {
+        let suite = "TutorialMigrationTests.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suite)!
+        defer { defaults.removePersistentDomain(forName: suite) }
+        defaults.set(5, forKey: "highestUnlockedLevel")
+        let model = GameViewModel(defaults: defaults)
+        for index in 0..<4 {
+            model.startGame(at: index)
+            XCTAssertFalse(model.showTutorial)
+        }
+        model.startGame(at: 4)
+        XCTAssertTrue(model.showTutorial)
+    }
+
+    func testScissorsOnlyArenaDoesNotLoseWhileAmmoRemains() {
+        let scene = GameScene(size: CGSize(width: 320, height: 568))
+        var ammo = 1
+        var lost = false
+        scene.canLaunchRock = { ammo > 0 }
+        scene.onLose = { _ in lost = true }
+        scene.load(level: LevelLibrary.level1)
+        scene.update(0)
+        XCTAssertFalse(lost)
+        ammo = 0
+        scene.update(1.0 / 60)
+        XCTAssertTrue(lost)
+    }
+
+    func testTutorialPausesMovementAndFiring() {
+        let scene = GameScene(size: CGSize(width: 320, height: 568))
+        var shots = 0
+        scene.didUseAmmo = { shots += 1 }
+        scene.load(level: LevelLibrary.level3)
+        let scissors = scene.children.filter { $0.name == "scissors" }
+        let positions = scissors.map(\.position)
+        scene.isGameplayPaused = true
+        for frame in 0..<180 {
+            scene.update(Double(frame) / 60)
+        }
+        scene.launchRock(toward: CGPoint(x: 160, y: 300))
+        XCTAssertEqual(scissors.map(\.position), positions)
+        XCTAssertEqual(shots, 0)
+        scene.isGameplayPaused = false
+        scene.launchRock(toward: CGPoint(x: 160, y: 300))
+        XCTAssertEqual(shots, 1)
+    }
+
+    func testTutorialAndFinalLevelsHaveWinningShotSequences() {
+        for number in [1, 2, 3, 4, 5, 99, 100] {
+            let level = LevelLibrary.allLevels[number - 1]
+            if number <= 3 {
+                XCTAssertFalse(level.initialObjects.contains { $0.type == .paper })
+            }
+            for size in [CGSize(width: 320, height: 568),
+                         CGSize(width: 390, height: 600),
+                         CGSize(width: 768, height: 900)] {
+                let scene = GameScene(size: size)
+                var ammo = level.startingAmmo
+                var won = false
+                var lost = false
+                scene.canLaunchRock = { ammo > 0 }
+                scene.didUseAmmo = { ammo -= 1 }
+                scene.onWin = { _ in won = true }
+                scene.onLose = { _ in lost = true }
+                scene.load(level: level)
+                for frame in 0..<3600 {
+                    // Let scissors clear the paper before launching any rocks.
+                    if frame == 180 && number >= 4 {
+                        XCTAssertFalse(scene.children.contains { $0.name == "paper" })
+                    }
+                    if frame >= 180 && (frame - 180) % 12 == 0 && ammo > 0 {
+                        let fractions: [CGFloat] = [0.2, 0.5, 0.8]
+                        let index = ((frame - 180) / 12) % fractions.count
+                        scene.launchRock(toward: CGPoint(
+                            x: size.width * fractions[index], y: size.height * 0.8
+                        ))
+                    }
+                    scene.update(Double(frame) / 60)
+                    if won || lost { break }
+                }
+                XCTAssertTrue(won, "Level \(number) at \(size) must have a winning sequence")
+                XCTAssertFalse(lost)
+                XCTAssertGreaterThanOrEqual(ammo, 0)
+            }
+        }
+    }
+
     private func simulateUniformType(level: LevelDefinition, seconds: Int) -> ObjectType? {
         let arenaSize = CGSize(width: 320, height: 568)
         let arenaInset: CGFloat = 24

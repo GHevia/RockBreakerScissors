@@ -33,12 +33,19 @@ struct GameView: View {
                     
                     if let message = viewModel.currentTutorialMessage,
                        viewModel.phase == .playing {
-                        VStack {
-                            TutorialOverlay(message: message) {
-                                viewModel.skipTutorial()
-                            }
-                            Spacer()
+                        Color.black.opacity(0.25)
+                            .contentShape(Rectangle())
+                            .onTapGesture { }
+                        ScrollView {
+                            TutorialOverlay(
+                                message: message,
+                                isLastStep: viewModel.isLastTutorialStep,
+                                onNext: { viewModel.advanceTutorial() },
+                                onSkip: { viewModel.skipTutorial() }
+                            )
+                            .padding(.top, 16)
                         }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                     }
                 }
                 .onAppear {
@@ -58,22 +65,12 @@ struct GameView: View {
                         loadCurrentLevel()
                     }
                 }
-                .onChange(of: viewModel.currentLevelIndex) { _ in
-                    loadCurrentLevel()
-                    viewModel.startTutorialIfNeeded()
-                    viewModel.showLevelHintIfNeeded()
-                }
                 .onChange(of: viewModel.reloadTrigger) { _ in
                     loadCurrentLevel()
-                    viewModel.startTutorialIfNeeded()
                     viewModel.showLevelHintIfNeeded()
                 }
-                .onChange(of: viewModel.phase) { newPhase in
-                    if newPhase == .playing {
-                        loadCurrentLevel()
-                        viewModel.startTutorialIfNeeded()
-                        viewModel.showLevelHintIfNeeded()
-                    }
+                .onChange(of: viewModel.showTutorial) { isShowing in
+                    scene.isGameplayPaused = isShowing
                 }
                 .onChange(of: viewModel.levelHintID) { hintID in
                     let currentID = hintID
@@ -198,18 +195,6 @@ struct GameView: View {
             viewModel.useAmmo()
         }
 
-        scene.didStartAiming = {
-            viewModel.handleTutorialEvent(.aimStarted)
-        }
-
-        scene.didLaunchRock = {
-            viewModel.handleTutorialEvent(.rockLaunched)
-        }
-
-        scene.didConvertObject = {
-            viewModel.handleTutorialEvent(.objectConverted)
-        }
-
         scene.didTouchArena = {
             viewModel.dismissLevelHint()
         }
@@ -222,6 +207,7 @@ struct GameView: View {
     private func loadCurrentLevel() {
         scene.backgroundColor = colorScheme == .dark ? .black : .white
         scene.applyTheme(isDarkMode: colorScheme == .dark)
+        scene.isGameplayPaused = viewModel.showTutorial
         scene.load(level: viewModel.currentLevel)
     }
 

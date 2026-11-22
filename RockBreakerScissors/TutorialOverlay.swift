@@ -10,6 +10,8 @@ import SwiftUI
 
 struct TutorialOverlay: View {
     let message: String
+    let isLastStep: Bool
+    let onNext: () -> Void
     let onSkip: () -> Void
 
     var body: some View {
@@ -24,6 +26,10 @@ struct TutorialOverlay: View {
                 .fixedSize(horizontal: false, vertical: true)
 
             HStack {
+                Button(isLastStep ? "Play" : "Next", action: onNext)
+                    .font(.headline.bold())
+                    .padding(.vertical, 8)
+
                 Spacer()
 
                 Button("Skip") {

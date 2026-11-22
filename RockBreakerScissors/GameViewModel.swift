@@ -2,12 +2,6 @@ import Foundation
 import SwiftUI
 
 final class GameViewModel: ObservableObject {
-    enum TutorialEvent {
-        case aimStarted
-        case rockLaunched
-        case objectConverted
-    }
-
     enum Phase {
         case menu
         case playing
@@ -31,12 +25,39 @@ final class GameViewModel: ObservableObject {
 
     let levels = LevelLibrary.allLevels
 
-    private let tutorialMessages: [String] = [
-        "Tap anywhere to fire, or drag from the launcher to aim.",
-        "Release to fire a rock.",
-        "Collisions change object types: rock beats scissors, scissors beats paper, paper beats rock.",
-        "Turn everything into rock to win."
-    ]
+    @AppStorage("completedTutorialLevels") var completedTutorialLevels: Int = 0
+
+    init(defaults: UserDefaults = .standard) {
+        _highestUnlockedLevel = AppStorage(wrappedValue: 1, "highestUnlockedLevel", store: defaults)
+        _completedTutorialLevels = AppStorage(wrappedValue: 0, "completedTutorialLevels", store: defaults)
+    }
+
+    private var tutorialMessages: [String] {
+        switch levelNumber {
+        case 1:
+            return [
+                "Your goal is to turn every object into rock. Rock turns scissors into rock when they touch.",
+                "Tap a target to fire a rock toward it. To aim more carefully, touch and drag anywhere in the arena, then release to fire. Try hitting the scissors."
+            ]
+        case 2:
+            return ["Now try two targets. Your rocks keep bouncing and can convert more scissors. You have plenty of shots, so take your time."]
+        case 3:
+            return ["These scissors move. Aim a little ahead of them, or let your rocks bounce until they meet. There is no time limit."]
+        case 4:
+            return [
+                "Here comes paper. Paper turns rocks into paper, but scissors turn paper into scissors.",
+                "Wait for the moving scissors to touch the paper. Once the paper is gone, fire rocks at the scissors to win."
+            ]
+        case 5:
+            return ["Practice the whole chain: let scissors clear both pieces of paper first, then turn the scissors into rock. Firing too early can remove the scissors you need. Restart if you need another try."]
+        default:
+            return []
+        }
+    }
+
+    var isLastTutorialStep: Bool {
+        tutorialStep == tutorialMessages.count - 1
+    }
 
     var currentLevel: LevelDefinition {
         levels[currentLevelIndex]
@@ -61,7 +82,7 @@ final class GameViewModel: ObservableObject {
     }
 
     var levelTitle: String {
-        levelNumber == 1 ? "Tutorial Level" : "Level \(levelNumber)"
+        levelNumber <= 5 ? "Lesson \(levelNumber)" : "Level \(levelNumber)"
     }
 
     func startGame(at levelIndex: Int? = nil) {
@@ -74,16 +95,20 @@ final class GameViewModel: ObservableObject {
         ammoRemaining = currentLevel.startingAmmo
         resultObjectType = nil
         dismissLevelHint()
-        reloadTrigger += 1
         phase = .playing
+        showTutorial = false
+        startTutorialIfNeeded()
+        reloadTrigger += 1
     }
 
     func restartLevel() {
         ammoRemaining = currentLevel.startingAmmo
         resultObjectType = nil
         dismissLevelHint()
-        reloadTrigger += 1
         phase = .playing
+        showTutorial = false
+        startTutorialIfNeeded()
+        reloadTrigger += 1
     }
 
     func goToMenu() {
@@ -126,8 +151,10 @@ final class GameViewModel: ObservableObject {
         ammoRemaining = currentLevel.startingAmmo
         resultObjectType = nil
         dismissLevelHint()
-        reloadTrigger += 1
         phase = .playing
+        showTutorial = false
+        startTutorialIfNeeded()
+        reloadTrigger += 1
     }
 
     func selectLevel(_ index: Int) {
@@ -141,6 +168,7 @@ final class GameViewModel: ObservableObject {
 
     func resetProgress() {
         highestUnlockedLevel = 1
+        completedTutorialLevels = 0
         currentLevelIndex = 0
         ammoRemaining = 0
         resultObjectType = nil
@@ -150,43 +178,32 @@ final class GameViewModel: ObservableObject {
     }
 
     func startTutorialIfNeeded() {
-        guard phase == .playing else { return }
-
-        if levelNumber == 1 {
-            if showTutorial == false {
-                tutorialStep = 0
-                showTutorial = true
-            }
-        } else {
-            showTutorial = false
-        }
+        guard phase == .playing, !showTutorial else { return }
+        // Existing progress also counts as completion for players upgrading the app.
+        guard levelNumber <= 5, levelNumber >= highestUnlockedLevel,
+              completedTutorialLevels & (1 << (levelNumber - 1)) == 0 else { return }
+        tutorialStep = 0
+        showTutorial = true
     }
 
-    func handleTutorialEvent(_ event: TutorialEvent) {
+    func advanceTutorial() {
         guard showTutorial else { return }
-
-        switch (tutorialStep, event) {
-        case (0, .aimStarted),
-             (1, .rockLaunched),
-             (2, .objectConverted):
+        if isLastTutorialStep {
+            skipTutorial()
+        } else {
             tutorialStep += 1
-
-        default:
-            break
-        }
-
-        if tutorialStep >= tutorialMessages.count {
-            showTutorial = false
         }
     }
 
     func skipTutorial() {
+        guard showTutorial else { return }
+        completedTutorialLevels |= 1 << (levelNumber - 1)
         showTutorial = false
     }
 
     func showLevelHintIfNeeded() {
         guard phase == .playing else { return }
-        guard levelNumber != 1 else { return }
+        guard levelNumber > 5 else { return }
         guard let message = currentLevel.introMessage else { return }
 
         levelHintMessage = message
