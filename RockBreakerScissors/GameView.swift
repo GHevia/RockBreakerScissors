@@ -19,11 +19,11 @@ struct GameView: View {
                         .ignoresSafeArea()
                     
                     SpriteView(scene: scene)
-                        .ignoresSafeArea()
-
-                    if viewModel.mode == .bet {
-                        VStack { betBar; Spacer() }
-                    }
+                        .frame(width: arenaGeo.size.width, height: arenaGeo.size.height)
+                        .clipped()
+                        .accessibilityElement(children: .ignore)
+                        .accessibilityLabel("Game arena")
+                        .accessibilityIdentifier("Game Arena")
                     if viewModel.phase == .won || viewModel.phase == .lost {
                         ScrollView { resultOverlay.padding(.vertical, 16) }
                     }
@@ -60,11 +60,8 @@ struct GameView: View {
                     loadCurrentLevel()
                 }
                 .onChange(of: arenaGeo.size) { newSize in
-                    // Resize the live arena without resetting its objects or ammunition.
+                    // GameScene keeps boundaries and object positions in sync with this viewport.
                     scene.size = newSize
-                    if viewModel.mode == .bet && (viewModel.phase == .betting || viewModel.phase == .countdown) {
-                        loadCurrentLevel()
-                    }
                 }
                 .onChange(of: viewModel.reloadTrigger) { _ in
                     loadCurrentLevel()
@@ -92,7 +89,7 @@ struct GameView: View {
                 }
             }
 
-            if viewModel.mode != .bet { bottomBar }
+            if viewModel.mode == .bet { betBar } else { bottomBar }
         }
         .background(backgroundColor.ignoresSafeArea())
     }
@@ -157,31 +154,33 @@ struct GameView: View {
     }
 
     private var betBar: some View {
-        VStack(spacing: 8) {
-            if viewModel.phase == .betting {
-                Text("Who will be last? Choose before they move.").font(.subheadline.bold())
-                HStack {
-                    ForEach([ObjectType.rock, .paper, .scissors], id: \.self) { type in
-                        Button { viewModel.chooseBet(type) } label: {
-                            VStack(spacing: 4) {
-                                Image(type.assetName).resizable().scaledToFit().frame(width: 24, height: 24)
-                                Text(type.displayName.capitalized).font(.subheadline)
-                            }
-                            .frame(maxWidth: .infinity).padding(.vertical, 8)
-                            .background(.thinMaterial).cornerRadius(12)
+        VStack(spacing: 4) {
+            Text(viewModel.betChoice.map { "Your pick: \($0.displayName.capitalized)" }
+                 ?? "Who will be last? Choose before they move.")
+                .font(.subheadline.bold())
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+                .frame(height: 20)
+            HStack {
+                ForEach([ObjectType.rock, .paper, .scissors], id: \.self) { type in
+                    Button { viewModel.chooseBet(type) } label: {
+                        HStack(spacing: 4) {
+                            Image(type.assetName).resizable().scaledToFit().frame(width: 20, height: 20)
+                            Text(type.displayName.capitalized).font(.subheadline)
+                                .lineLimit(1).minimumScaleFactor(0.8)
                         }
-                        .buttonStyle(PlainButtonStyle())
+                        .frame(maxWidth: .infinity).padding(.vertical, 6)
+                        .background(Color.accentColor.opacity(viewModel.betChoice == type ? 0.3 : 0.1))
+                        .cornerRadius(10)
                     }
+                    .buttonStyle(PlainButtonStyle())
+                    .disabled(viewModel.phase != .betting)
                 }
-            } else if let choice = viewModel.betChoice {
-                Text("Your pick: \(choice.displayName.capitalized)").font(.subheadline.bold())
             }
         }
-        .padding(8)
-        .background(.ultraThinMaterial)
-        .cornerRadius(12)
         .padding(.horizontal, 12)
-        .padding(.top, 8)
+        .padding(.vertical, 8)
+        .background(.thinMaterial)
     }
 
     private var resultTitle: String {

@@ -59,6 +59,10 @@ final class RockBreakerScissorsUITests: XCTestCase {
         app.launch()
         app.buttons["Bet"].tap()
         XCTAssertTrue(app.staticTexts["Who will be last? Choose before they move."].waitForExistence(timeout: 5))
+        let arena = app.descendants(matching: .any)["Game Arena"].firstMatch
+        XCTAssertTrue(arena.waitForExistence(timeout: 5))
+        let prompt = app.staticTexts["Who will be last? Choose before they move."]
+        XCTAssertGreaterThanOrEqual(prompt.frame.minY, arena.frame.maxY - 1)
         app.buttons["Paper"].tap()
         XCTAssertTrue(app.staticTexts["Your pick: Paper"].exists)
         XCTAssertTrue(app.staticTexts["Starting in 3"].waitForExistence(timeout: 1))

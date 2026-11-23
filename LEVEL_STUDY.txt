@@ -139,15 +139,30 @@ verify the new iOS game flows.
 
 1.1 polish
 ----------
-Balance uses radius 14 for initial objects and launched rocks. New Round
+Balance uses radius 18 for initial objects and launched rocks. New Round
 within Balance skips the description and immediately starts the next timer;
 entering Balance from the main menu still shows the instructions. The end
 callback names the missing population(s), and the results card uses a 60%
 background so the frozen final arena remains visible in every mode.
 
-Bet controls float over the arena. Removing the separate selection panel
-and bottom bar gives the arena substantially more vertical space. Its
-header, results, menu description, and settings show wins/completed rounds
+Bet controls use a compact footer outside the arena, so the prompt and
+choices never cover objects. The footer stays the same height after a pick.
+Its header, results, menu description, and settings show wins/completed rounds
 and a rounded win percentage. Only resolved rounds count; duplicate result
 callbacks and abandoned previews/countdowns do not count. Refresh Betting
 Record in Settings clears just those two saved counters.
+
+Arena sizing and readability
+---------------------------
+Bet now generates 6–11 objects, with radius 18 instead of 14. Balance also
+uses radius 18, including fired rocks. Random placement leaves at least
+34 points between centers on a 320x252 arena.
+
+SpriteView is constrained to the GeometryReader viewport rather than
+expanding into safe areas. GameScene.didChangeSize rebuilds drawn edges
+and walls and remaps/clamps existing object positions using their radii.
+This also runs during the frozen first Bet preview: a size change cannot
+leave the drawn top edge at its initial size while motion uses new bounds.
+Resizing does not reset the round, result, timer, or choice. Native tests
+cover first-load/resizing bounds, and a UI check keeps the prompt outside
+the arena. Running those checks and visual QA still requires Xcode.

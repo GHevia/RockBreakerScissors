@@ -1673,7 +1673,7 @@ extension LevelLibrary {
     /// Continuous random positions, independently random directions and speeds.
     /// Rejection sampling leaves room between objects even on a compact 320x252 arena.
     static func modeLevel<R: RandomNumberGenerator>(for mode: GameMode, using generator: inout R) -> LevelDefinition {
-        let count = Int.random(in: mode == .bet ? 9...18 : 6...12, using: &generator)
+        let count = Int.random(in: mode == .bet ? 6...11 : 6...12, using: &generator)
         var types: [ObjectType] = mode == .bet ? [.rock, .paper, .scissors] : [.paper, .scissors]
         let choices: [ObjectType] = mode == .bet ? [.rock, .paper, .scissors] : [.paper, .scissors]
         while types.count < count { types.append(choices[Int.random(in: 0..<choices.count, using: &generator)]) }
@@ -1685,13 +1685,13 @@ extension LevelLibrary {
                 point = CGPoint(x: CGFloat.random(in: 0.10...0.90, using: &generator),
                                 y: CGFloat.random(in: 0.15...0.90, using: &generator))
             } while objects.contains(where: {
-                hypot((point.x - $0.xPercent) * 272, (point.y - $0.yPercent) * 180) < 28
+                hypot((point.x - $0.xPercent) * 272, (point.y - $0.yPercent) * 180) < 34
             })
             objects.append(InitialObjectDefinition(type: type, xPercent: point.x, yPercent: point.y,
                                                    angleDegrees: CGFloat.random(in: 0..<360, using: &generator),
-                                                   speed: CGFloat.random(in: 80...180, using: &generator), radius: 14))
+                                                   speed: CGFloat.random(in: 80...180, using: &generator), radius: 18))
         }
         return LevelDefinition(levelNumber: 0, startingAmmo: 0, launchSpeed: 200,
-                               launchedRockRadius: mode == .balance ? 14 : 18, initialObjects: objects)
+                               launchedRockRadius: 18, initialObjects: objects)
     }
 }

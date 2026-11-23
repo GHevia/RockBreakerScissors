@@ -438,6 +438,9 @@ final class RockBreakerScissorsTests: XCTestCase {
             var counts = Set<Int>()
             for _ in 0..<100 {
                 let level = LevelLibrary.modeLevel(for: mode, using: &generator)
+                XCTAssertTrue((mode == .bet ? 6...11 : 6...12).contains(level.initialObjects.count))
+                XCTAssertTrue(level.initialObjects.allSatisfy { $0.radius == 18 })
+                XCTAssertEqual(level.launchedRockRadius, 18)
                 XCTAssertTrue(level.initialObjects.contains { $0.type == .paper })
                 XCTAssertTrue(level.initialObjects.contains { $0.type == .scissors })
                 XCTAssertEqual(level.initialObjects.contains { $0.type == .rock }, mode == .bet)
@@ -473,6 +476,39 @@ final class RockBreakerScissorsTests: XCTestCase {
         scene.children.first { $0.name == "scissors" }?.name = "rock"
         scene.update(101 + 1.0 / 60)
         XCTAssertTrue(ended)
+    }
+
+    func testFirstBetPresentationAndLaterResizesKeepObjectsInsideVisibleBoundaries() {
+        var generator = SeededGenerator(state: 186)
+        let scene = GameScene(size: CGSize(width: 390, height: 844))
+        scene.mode = .bet
+        scene.isGameplayPaused = true
+        let level = LevelLibrary.modeLevel(for: .bet, using: &generator)
+        scene.load(level: level)
+        // Reproduce a first presentation that changes size after loading while frozen.
+        for size in [CGSize(width: 320, height: 400), CGSize(width: 390, height: 600), CGSize(width: 320, height: 252)] {
+            scene.size = size
+            let objects = scene.children.compactMap { $0 as? SKSpriteNode }.filter { $0.name != nil }
+            XCTAssertEqual(objects.count, level.initialObjects.count)
+            for node in objects {
+                XCTAssertGreaterThanOrEqual(node.frame.minX, 24 - 0.001)
+                XCTAssertLessThanOrEqual(node.frame.maxX, size.width - 24 + 0.001)
+                XCTAssertGreaterThanOrEqual(node.frame.minY, 48 - 0.001)
+                XCTAssertLessThanOrEqual(node.frame.maxY, size.height - 24 + 0.001)
+            }
+            let edges = scene.children.compactMap { $0 as? SKShapeNode }.filter { $0.zPosition == 5 }
+            XCTAssertEqual(edges.count, 4)
+            let tops = edges.compactMap { $0.path?.boundingBoxOfPath.maxY }
+            XCTAssertEqual(tops.max()!, size.height - 24, accuracy: 0.001)
+            let positions = objects.map(\.position)
+            scene.update(100)
+            XCTAssertEqual(objects.map(\.position), positions)
+        }
+        scene.isGameplayPaused = false
+        for frame in 0..<180 { scene.update(101 + Double(frame) / 60) }
+        for node in scene.children.compactMap({ $0 as? SKSpriteNode }).filter({ $0.name != nil }) {
+            XCTAssertLessThanOrEqual(node.frame.maxY, scene.size.height - 24 + 0.001)
+        }
     }
 
     func testBetPreviewIsFrozenAndEveryUniformTypeCanWinWithoutShots() {

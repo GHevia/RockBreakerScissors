@@ -63,6 +63,39 @@ final class GameScene: SKScene {
         // GameView controls backgroundColor based on light/dark mode.
     }
 
+    override func didChangeSize(_ oldSize: CGSize) {
+        guard let level = currentLevel, size.width > arenaInset * 2, size.height > arenaInset * 2 + 24 else { return }
+
+        // SpriteView may finalize its size after the first level load. Rebuild the
+        // visible edges from the same size used by movement, including while frozen.
+        let oldWidth = oldSize.width - arenaInset * 2
+        let oldHeight = oldSize.height - arenaInset * 2 - 24
+        let width = size.width - arenaInset * 2
+        let height = size.height - arenaInset * 2 - 24
+        for node in objectNodes {
+            let radius = node.userData?["radius"] as? CGFloat ?? 0
+            let x = oldWidth > 0 ? (node.position.x - arenaInset) / oldWidth : 0.5
+            let y = oldHeight > 0 ? (node.position.y - arenaInset - 24) / oldHeight : 0.5
+            node.position = CGPoint(
+                x: min(size.width - arenaInset - radius, max(arenaInset + radius, arenaInset + x * width)),
+                y: min(size.height - arenaInset - radius, max(arenaInset + 24 + radius, arenaInset + 24 + y * height))
+            )
+        }
+        boundaryLineNodes.forEach { $0.removeFromParent() }
+        boundaryLineNodes.removeAll()
+        wallNodes.forEach { $0.removeFromParent() }
+        wallNodes.removeAll()
+        wallRects.removeAll()
+        setupWalls(level.walls)
+        setupBoundaries()
+        launcherPosition = CGPoint(x: size.width * 0.5, y: arenaInset)
+        launcherNode?.position = launcherPosition
+        launchPortNode?.position = launcherPosition
+        clearAimDots()
+        touchStartPoint = nil
+        lastUpdateTime = nil
+    }
+
     func applyTheme(isDarkMode: Bool) {
         self.isDarkMode = isDarkMode
 
@@ -219,8 +252,9 @@ final class GameScene: SKScene {
             let clampedX = max(0.0, min(1.0, def.xPercent))
             let clampedY = max(0.0, min(1.0, def.yPercent))
 
-            let x = minX + clampedX * (maxX - minX)
-            let y = minY + clampedY * (maxY - minY)
+            let radius = def.radius * objectScale
+            let x = min(maxX - radius, max(minX + radius, minX + clampedX * (maxX - minX)))
+            let y = min(maxY - radius, max(minY + radius, minY + clampedY * (maxY - minY)))
 
             let node = makeNode(
                 type: def.type,
