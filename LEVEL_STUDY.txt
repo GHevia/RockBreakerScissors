@@ -100,9 +100,39 @@ preserves the generated layout; Skip makes a new one immediately. Winning
 or skipping random rounds never changes campaign unlock progress. Random
 rounds are not solution-certified and may be difficult; Skip stays available.
 
-Future idea: Balance mode (not implemented)
-------------------------------------------
-Begin with a random rock/paper/scissors population and keep all three types
-alive as long as possible. End when any type disappears. Save survival-time
-high scores so players can try to beat their best. Controls, scoring details,
-and population replenishment remain design decisions for later work.
+Version 1.1: three game modes
+----------------------------
+The main menu now has Rock Mode, Balance, and Bet. Rock Mode contains
+Continue, Select Level, Random Levels, and Start Over. This keeps choosing
+a game separate from choosing how to enter its campaign. Version metadata
+is 1.1, build 2. Campaign layouts and unlock progress are unchanged.
+
+Balance starts with a continuously randomized spread of paper and scissors.
+The player fires unlimited rocks from the existing bottom-center launcher.
+The round ends when either paper or scissors disappears, regardless of
+whether the remaining objects are uniform. Rocks need not remain present:
+they are the replenishable input, and the initial population has no rocks.
+The timer starts after the instructions are dismissed and measures active
+game time. Backgrounding pauses the timer and the simulation. Completed
+rounds save the best time separately from Rock Mode progress; resetting
+Rock progress does not erase the Balance record.
+
+Bet starts with all three types present, random counts, continuous random
+positions, independent random directions, and random speeds. Initial
+overlap is avoided by rejection sampling. The arena remains frozen until
+the player picks rock, paper, or scissors from the top bar. The choice
+locks, 3/2/1 counts down, then the simulation runs without player shots.
+A correct prediction displays "You won!". New Round cancels any pending
+countdown and generates another board. Backgrounding pauses the countdown
+and simulation. No campaign progress is awarded by either new mode.
+
+Daily puzzles remain a possible follow-up, not part of 1.1. A daily puzzle
+would need a stable date-based seed, a defined daily timezone, and separate
+score records so all players see the same board for the same date. The
+random generators accept an injected RNG to support seeded boards later.
+
+Native tests were added for mode generation, balance timing and score
+persistence, countdown/choice transitions, frozen bet previews, and mode
+isolation. UI tests cover the three-mode navigation and countdown entry.
+These require Xcode; this Linux environment cannot execute or visually
+verify the new iOS game flows.

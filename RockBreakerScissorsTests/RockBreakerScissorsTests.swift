@@ -308,6 +308,130 @@ final class RockBreakerScissorsTests: XCTestCase {
         XCTAssertEqual(ammo, 7)
     }
 
+    func testBalanceScoreIsSavedAndSeparateFromRockProgress() {
+        withModel { model, defaults in
+            model.highestUnlockedLevel = 25
+            model.startBalanceGame()
+            XCTAssertTrue(model.showTutorial)
+            XCTAssertFalse(model.canFire)
+            model.skipTutorial()
+            XCTAssertTrue(model.canFire)
+            for _ in 0..<20 { model.useAmmo() }
+            XCTAssertTrue(model.canFire)
+            model.finishBalance(at: 12.5)
+            XCTAssertEqual(model.phase, .lost)
+            XCTAssertEqual(model.balanceBestTime, 12.5)
+            XCTAssertEqual(GameViewModel(defaults: defaults).balanceBestTime, 12.5)
+            XCTAssertEqual(model.highestUnlockedLevel, 25)
+            model.startBalanceGame()
+            model.skipTutorial()
+            model.finishBalance(at: 3)
+            XCTAssertEqual(model.balanceBestTime, 12.5)
+            model.resetProgress()
+            XCTAssertEqual(model.balanceBestTime, 12.5)
+            model.startGame(at: 0)
+            XCTAssertEqual(model.mode, .rock)
+        }
+    }
+
+    func testBetChoiceLocksUntilCountdownFinishesAndDoesNotUnlockCampaign() {
+        withModel { model, _ in
+            model.startBetGame()
+            XCTAssertEqual(model.phase, .betting)
+            XCTAssertFalse(model.canFire)
+            model.resolveBet(winner: .rock)
+            XCTAssertEqual(model.phase, .betting)
+            model.chooseBet(.paper)
+            model.chooseBet(.scissors)
+            XCTAssertEqual(model.betChoice, .paper)
+            XCTAssertEqual(model.countdown, 3)
+            model.advanceCountdown()
+            XCTAssertEqual(model.countdown, 2)
+            model.advanceCountdown()
+            XCTAssertEqual(model.countdown, 1)
+            XCTAssertEqual(model.phase, .countdown)
+            model.advanceCountdown()
+            XCTAssertEqual(model.phase, .playing)
+            XCTAssertFalse(model.canFire)
+            model.resolveBet(winner: .paper)
+            XCTAssertEqual(model.phase, .won)
+            XCTAssertEqual(model.highestUnlockedLevel, 1)
+            model.restartLevel()
+            XCTAssertNil(model.betChoice)
+            XCTAssertEqual(model.phase, .betting)
+            model.chooseBet(.rock)
+            for _ in 0..<3 { model.advanceCountdown() }
+            model.resolveBet(winner: .scissors)
+            XCTAssertEqual(model.phase, .lost)
+            model.goToMenu()
+            model.advanceCountdown()
+            XCTAssertEqual(model.phase, .menu)
+        }
+    }
+
+    func testModeLayoutsAreVariedAndSeparatedOnCompactArenas() {
+        var generator = SeededGenerator(state: 782)
+        for mode in [GameMode.balance, .bet] {
+            var counts = Set<Int>()
+            for _ in 0..<100 {
+                let level = LevelLibrary.modeLevel(for: mode, using: &generator)
+                XCTAssertTrue(level.initialObjects.contains { $0.type == .paper })
+                XCTAssertTrue(level.initialObjects.contains { $0.type == .scissors })
+                XCTAssertEqual(level.initialObjects.contains { $0.type == .rock }, mode == .bet)
+                counts.insert(level.initialObjects.count)
+                assertClearLayout(level, size: CGSize(width: 320, height: 252))
+            }
+            XCTAssertGreaterThan(counts.count, 3)
+        }
+    }
+
+    func testBalanceTimerExcludesPausedTimeAndEndsWhenEitherPopulationDisappears() {
+        let scene = GameScene(size: CGSize(width: 320, height: 568))
+        scene.mode = .balance
+        var time: TimeInterval = 0
+        var ended = false
+        scene.onBalanceTick = { time = $0 }
+        scene.onBalanceEnd = { _ in ended = true }
+        scene.load(level: LevelDefinition(levelNumber: 0, startingAmmo: 0, launchSpeed: 100, launchedRockRadius: 20, initialObjects: [
+            InitialObjectDefinition(type: .paper, xPercent: 0.3, yPercent: 0.5, angleDegrees: 0, speed: 0, radius: 20),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.7, yPercent: 0.5, angleDegrees: 0, speed: 0, radius: 20)
+        ]))
+        for frame in 0...60 { scene.update(Double(frame) / 60) }
+        XCTAssertEqual(time, 1, accuracy: 0.001)
+        scene.isGameplayPaused = true
+        scene.update(100)
+        scene.isGameplayPaused = false
+        scene.update(101)
+        XCTAssertEqual(time, 1, accuracy: 0.001)
+        XCTAssertFalse(ended)
+        scene.children.first { $0.name == "scissors" }?.name = "rock"
+        scene.update(101 + 1.0 / 60)
+        XCTAssertTrue(ended)
+    }
+
+    func testBetPreviewIsFrozenAndEveryUniformTypeCanWinWithoutShots() {
+        for type in [ObjectType.rock, .paper, .scissors] {
+            let scene = GameScene(size: CGSize(width: 320, height: 568))
+            scene.mode = .bet
+            scene.isGameplayPaused = true
+            var winner: ObjectType?
+            scene.onWin = { winner = $0 }
+            scene.canLaunchRock = { true }
+            scene.load(level: LevelDefinition(levelNumber: 0, startingAmmo: 8, launchSpeed: 100, launchedRockRadius: 20, initialObjects: [
+                InitialObjectDefinition(type: type, xPercent: 0.3, yPercent: 0.5, angleDegrees: 0, speed: 100, radius: 20)
+            ]))
+            let object = scene.children.first { $0.name == type.assetName }!
+            let position = object.position
+            scene.update(10)
+            scene.launchRock(toward: CGPoint(x: 160, y: 400))
+            XCTAssertEqual(object.position, position)
+            XCTAssertNil(winner)
+            scene.isGameplayPaused = false
+            scene.update(11)
+            XCTAssertEqual(winner, type)
+        }
+    }
+
     func testEveryCampaignLevelHasARecordedWinningSequence() {
         // Generated from level-audit.csv. Replay against the real SpriteKit scene,
         // including fully stationary puzzles solved by rock -> paper -> scissors.

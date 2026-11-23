@@ -2,6 +2,7 @@ import SwiftUI
 
 struct MainMenuView: View {
     @EnvironmentObject var viewModel: GameViewModel
+    @State private var showingRockOptions = false
     @AppStorage("useDarkMode") private var useDarkMode: Bool = true
 
     var body: some View {
@@ -42,14 +43,46 @@ struct MainMenuView: View {
                 .font(.system(size: 24, weight: .bold, design: .rounded))
                 .multilineTextAlignment(.center)
 
-            Text("Turn everything into rock.")
+            Text(showingRockOptions ? "Turn everything into rock." : "Choose how to play.")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
         }
+        .overlay(alignment: .topTrailing) { Text("1.1").font(.caption).foregroundColor(.secondary) }
         .padding(.top, 24)
     }
 
     private var actionSection: some View {
+        VStack(spacing: 14) {
+            if showingRockOptions {
+                Button("All Modes") { showingRockOptions = false }
+                Text("Rock Mode").font(.title2.bold())
+                rockActions
+            } else {
+                modeButton("Rock Mode", detail: "Campaign, level select, and random challenges") { showingRockOptions = true }
+                modeButton("Balance", detail: "Keep paper and scissors alive · Best: \(GameViewModel.timeLabel(viewModel.balanceBestTime))") {
+                    viewModel.startBalanceGame()
+                }
+                modeButton("Bet", detail: "Read the board. Pick the last type standing.") { viewModel.startBetGame() }
+            }
+        }
+    }
+
+    private func modeButton(_ title: String, detail: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            VStack(spacing: 6) {
+                Text(title).font(.title2.bold())
+                Text(detail).font(.subheadline).foregroundColor(.secondary).multilineTextAlignment(.center)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(18)
+            .background(Color.accentColor.opacity(0.16))
+            .cornerRadius(18)
+        }
+        .buttonStyle(PlainButtonStyle())
+        .accessibilityLabel(title)
+    }
+
+    private var rockActions: some View {
         VStack(spacing: 14) {
             MenuButton(title: "Continue") {
                 viewModel.startGame(at: viewModel.continueLevelIndex)
@@ -86,7 +119,7 @@ struct MainMenuView: View {
             Button(role: .destructive) {
                 viewModel.resetProgress()
             } label: {
-                Text("Reset Progress")
+                Text("Reset Rock Progress")
                     .frame(maxWidth: .infinity)
             }
             .padding(.top, 4)

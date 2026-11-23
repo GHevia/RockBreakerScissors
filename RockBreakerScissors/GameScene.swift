@@ -4,11 +4,18 @@ import CoreGraphics
 final class GameScene: SKScene {
     // MARK: - Public callbacks
 
+    var mode: GameMode = .rock
+    var onBalanceTick: ((TimeInterval) -> Void)?
+    var onBalanceEnd: ((TimeInterval) -> Void)?
+    private var lastUpdateTime: TimeInterval?
+    private var survivalTime: TimeInterval = 0
     var onWin: ((ObjectType) -> Void)?
     var onLose: ((ObjectType) -> Void)?
     var didUseAmmo: (() -> Void)?
     var canLaunchRock: (() -> Bool)?
-    var isGameplayPaused = false
+    var isGameplayPaused = false {
+        didSet { if isGameplayPaused { lastUpdateTime = nil } }
+    }
     var didTryLaunchWithoutAmmo: (() -> Void)?
 
     // MARK: - Private state
@@ -90,7 +97,9 @@ final class GameScene: SKScene {
         hasLaunchedRock = false
         touchStartPoint = nil
 
-        setupLauncher()
+        lastUpdateTime = nil
+        survivalTime = 0
+        if mode != .bet { setupLauncher() }
         setupWalls(level.walls)
         setupInitialObjects(level.initialObjects)
         applyTheme(isDarkMode: isDarkMode)
@@ -291,7 +300,7 @@ final class GameScene: SKScene {
     // MARK: - Touch handling
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let touch = touches.first else { return }
+        guard mode != .bet, let touch = touches.first else { return }
         guard !isShowingResult, !isGameplayPaused else { return }
         guard canLaunchRock?() ?? true else {
             didTryLaunchWithoutAmmo?()
@@ -336,7 +345,7 @@ final class GameScene: SKScene {
 
     // Shared by touch input and deterministic gameplay checks.
     func launchRock(toward location: CGPoint) {
-        guard !isShowingResult, !isGameplayPaused,
+        guard mode != .bet, !isShowingResult, !isGameplayPaused,
               canLaunchRock?() ?? true,
               let level = currentLevel else { return }
         let direction = CGVector(
@@ -405,10 +414,18 @@ final class GameScene: SKScene {
     // MARK: - Update loop
 
     override func update(_ currentTime: TimeInterval) {
-        guard currentLevel != nil, !isGameplayPaused, !isShowingResult else { return }
+        guard currentLevel != nil, !isGameplayPaused, !isShowingResult else {
+            lastUpdateTime = nil
+            return
+        }
         guard size.width > 0 && size.height > 0 else { return }
 
-        let dt: CGFloat = 1.0 / 60.0
+        let dt: CGFloat = mode == .rock ? 1.0 / 60.0 : CGFloat(lastUpdateTime.map { min(0.1, max(0, currentTime - $0)) } ?? 0)
+        lastUpdateTime = currentTime
+        if mode == .balance {
+            survivalTime += TimeInterval(dt)
+            onBalanceTick?(survivalTime)
+        }
 
         moveObjects(dt: dt)
         handleConversions()
@@ -588,6 +605,22 @@ final class GameScene: SKScene {
             case .scissors:
                 scissorsCount += 1
             }
+        }
+
+        if mode == .balance {
+            if paperCount == 0 || scissorsCount == 0 {
+                isShowingResult = true
+                onBalanceEnd?(survivalTime)
+            }
+            return
+        }
+        if mode == .bet {
+            if let winner = objectNodes.first.flatMap({ objectType(for: $0) }),
+               objectNodes.allSatisfy({ objectType(for: $0) == winner }) {
+                isShowingResult = true
+                onWin?(winner)
+            }
+            return
         }
 
         if rockCount == objectNodes.count {

@@ -3,6 +3,7 @@ import SpriteKit
 
 struct GameView: View {
     @EnvironmentObject var viewModel: GameViewModel
+    @Environment(\.scenePhase) private var scenePhase
     @Environment(\.colorScheme) private var colorScheme
 
     @State private var scene = GameScene()
@@ -11,6 +12,7 @@ struct GameView: View {
     var body: some View {
         VStack(spacing: 0) {
             topBar
+            if viewModel.mode == .bet { betBar }
 
             GeometryReader { arenaGeo in
                 ZStack {
@@ -21,9 +23,17 @@ struct GameView: View {
                         .ignoresSafeArea()
 
                     if viewModel.phase == .won || viewModel.phase == .lost {
-                        resultOverlay
+                        ScrollView { resultOverlay.padding(.vertical, 16) }
                     }
                     
+                    if viewModel.phase == .countdown {
+                        Text("\(viewModel.countdown)")
+                            .font(.system(size: 80, weight: .heavy, design: .rounded))
+                            .padding(30)
+                            .background(.ultraThinMaterial)
+                            .clipShape(Circle())
+                            .accessibilityLabel("Starting in \(viewModel.countdown)")
+                    }
                     if let message = viewModel.currentTutorialMessage,
                        viewModel.phase == .playing {
                         Color.black.opacity(0.25)
@@ -50,12 +60,25 @@ struct GameView: View {
                 .onChange(of: arenaGeo.size) { newSize in
                     // Resize the live arena without resetting its objects or ammunition.
                     scene.size = newSize
+                    if viewModel.mode == .bet && (viewModel.phase == .betting || viewModel.phase == .countdown) {
+                        loadCurrentLevel()
+                    }
                 }
                 .onChange(of: viewModel.reloadTrigger) { _ in
                     loadCurrentLevel()
                 }
-                .onChange(of: viewModel.showTutorial) { isShowing in
-                    scene.isGameplayPaused = isShowing
+                .onChange(of: viewModel.showTutorial) { _ in
+                    refreshPause()
+                }
+                .onChange(of: viewModel.phase) { _ in refreshPause() }
+                .onChange(of: scenePhase) { _ in refreshPause() }
+                .task(id: "\(viewModel.reloadTrigger)-\(viewModel.phase)-\(scenePhase)") {
+                    guard viewModel.phase == .countdown, scenePhase == .active else { return }
+                    while viewModel.phase == .countdown {
+                        do { try await Task.sleep(nanoseconds: 1_000_000_000) } catch { return }
+                        guard !Task.isCancelled else { return }
+                        viewModel.advanceCountdown()
+                    }
                 }
                 .onChange(of: viewModel.ammoWarningID) { _ in
                     flashAmmoCounter()
@@ -92,23 +115,65 @@ struct GameView: View {
 
     private var bottomBar: some View {
         HStack(spacing: 12) {
-            ammoChip(count: viewModel.ammoRemaining)
+            if viewModel.mode == .balance {
+                VStack(alignment: .leading) {
+                    Text(GameViewModel.timeLabel(viewModel.balanceTime)).font(.headline).monospacedDigit()
+                    Text("Best: \(GameViewModel.timeLabel(viewModel.balanceBestTime))").font(.subheadline)
+                }
+            } else if viewModel.mode == .rock {
+                ammoChip(count: viewModel.ammoRemaining)
+            }
 
             Spacer()
 
-            if viewModel.isRandomMode {
+            if viewModel.mode == .bet {
+                Text("Watch the arena").font(.subheadline).foregroundColor(.secondary)
+            } else if viewModel.mode == .balance {
+                Text("Unlimited rocks").font(.subheadline).foregroundColor(.secondary)
+            } else if viewModel.isRandomMode {
                 smallButton(title: "Skip") { viewModel.skipRandomLevel() }
             } else if viewModel.hasInstructions {
                 smallButton(title: "Help") { viewModel.showInstructions() }
             }
 
-            smallButton(title: "Restart") {
+            smallButton(title: viewModel.mode == .rock ? "Restart" : "New Round") {
                 viewModel.restartLevel()
             }
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 12)
         .background(.thinMaterial)
+    }
+
+    private var betBar: some View {
+        VStack(spacing: 8) {
+            if viewModel.phase == .betting {
+                Text("Who will be last? Choose before they move.").font(.subheadline.bold())
+                HStack {
+                    ForEach([ObjectType.rock, .paper, .scissors], id: \.self) { type in
+                        Button { viewModel.chooseBet(type) } label: {
+                            VStack(spacing: 4) {
+                                Image(type.assetName).resizable().scaledToFit().frame(width: 24, height: 24)
+                                Text(type.displayName.capitalized).font(.subheadline)
+                            }
+                            .frame(maxWidth: .infinity).padding(.vertical, 8)
+                            .background(.thinMaterial).cornerRadius(12)
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                    }
+                }
+            } else if let choice = viewModel.betChoice {
+                Text("Your pick: \(choice.displayName.capitalized)").font(.subheadline.bold())
+            }
+        }
+        .frame(height: 100)
+        .padding(12)
+    }
+
+    private var resultTitle: String {
+        if viewModel.mode == .balance { return "Time’s up!" }
+        if viewModel.mode == .bet { return viewModel.phase == .won ? "You won!" : "Try again!" }
+        return viewModel.isCampaignVictory ? "You win!" : viewModel.phase == .won ? "LEVEL COMPLETE!" : "TRY AGAIN"
     }
 
     private var resultOverlay: some View {
@@ -123,11 +188,15 @@ struct GameView: View {
             }
 
             VStack(spacing: 6) {
-                Text(viewModel.isCampaignVictory ? "You win!" : didWin ? "LEVEL COMPLETE!" : "TRY AGAIN")
+                Text(resultTitle)
                     .font(.system(size: 28, weight: .heavy, design: .rounded))
                     .foregroundColor(didWin ? .green : .red)
 
-                if viewModel.isCampaignVictory {
+                if viewModel.mode == .balance {
+                    Text("Survived \(GameViewModel.timeLabel(viewModel.balanceTime))")
+                    Text("Best: \(GameViewModel.timeLabel(viewModel.balanceBestTime))")
+                    Text("Paper or scissors disappeared.").font(.subheadline).foregroundColor(.secondary)
+                } else if viewModel.isCampaignVictory {
                     Text("You completed all \(viewModel.levels.count) campaign levels!")
                         .font(.subheadline.bold())
                         .multilineTextAlignment(.center)
@@ -139,7 +208,9 @@ struct GameView: View {
                 }
             }
 
-            if viewModel.isCampaignVictory {
+            if viewModel.mode != .rock {
+                largeButton(title: "New Round", fill: .green) { viewModel.restartLevel() }
+            } else if viewModel.isCampaignVictory {
                 largeButton(title: "Play Random Levels", fill: .green) {
                     viewModel.startRandomGame()
                 }
@@ -153,8 +224,8 @@ struct GameView: View {
                 }
             }
 
-            largeButton(title: "Replay Level") {
-                viewModel.restartLevel()
+            if viewModel.mode == .rock {
+                largeButton(title: "Replay Level") { viewModel.restartLevel() }
             }
 
             largeButton(title: "Main Menu") {
@@ -175,16 +246,17 @@ struct GameView: View {
         scene.applyTheme(isDarkMode: colorScheme == .dark)
 
         scene.onWin = { finalObjectType in
-            viewModel.completeLevel(finalObjectType: finalObjectType)
+            if viewModel.mode == .bet { viewModel.resolveBet(winner: finalObjectType) }
+            else { viewModel.completeLevel(finalObjectType: finalObjectType) }
         }
 
         scene.onLose = { finalObjectType in
             viewModel.failLevel(finalObjectType: finalObjectType)
         }
 
-        scene.canLaunchRock = {
-            viewModel.phase == .playing && viewModel.ammoRemaining > 0
-        }
+        scene.canLaunchRock = { viewModel.canFire }
+        scene.onBalanceTick = { viewModel.balanceTime = $0 }
+        scene.onBalanceEnd = { viewModel.finishBalance(at: $0) }
 
         scene.didUseAmmo = {
             viewModel.useAmmo()
@@ -198,8 +270,13 @@ struct GameView: View {
     private func loadCurrentLevel() {
         scene.backgroundColor = colorScheme == .dark ? .black : .white
         scene.applyTheme(isDarkMode: colorScheme == .dark)
-        scene.isGameplayPaused = viewModel.showTutorial
+        scene.mode = viewModel.mode
+        refreshPause()
         scene.load(level: viewModel.currentLevel)
+    }
+
+    private func refreshPause() {
+        scene.isGameplayPaused = viewModel.showTutorial || viewModel.phase != .playing || scenePhase != .active
     }
 
     private func levelChip(title: String) -> some View {

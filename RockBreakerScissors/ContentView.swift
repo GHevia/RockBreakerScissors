@@ -16,7 +16,7 @@ struct ContentView: View {
             case .menu:
                 MainMenuView()
 
-            case .playing, .won, .lost:
+            case .betting, .countdown, .playing, .won, .lost:
                 GameView()
             }
         }

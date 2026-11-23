@@ -171,10 +171,10 @@ enum LevelLibrary {
         launchSpeed: 120,
         launchedRockRadius: 22,
         initialObjects: [
-            InitialObjectDefinition(type: .scissors, xPercent: 0.18, yPercent: 0.72, angleDegrees: 0, speed: 120, radius: 22),
-            InitialObjectDefinition(type: .paper, xPercent: 0.18, yPercent: 0.42, angleDegrees: 0, speed: 120, radius: 22),
-            InitialObjectDefinition(type: .paper, xPercent: 0.42, yPercent: 0.72, angleDegrees: 0, speed: 0, radius: 22),
-            InitialObjectDefinition(type: .paper, xPercent: 0.72, yPercent: 0.72, angleDegrees: 0, speed: 0, radius: 22)
+            InitialObjectDefinition(type: .paper, xPercent: 0.35, yPercent: 0.15, angleDegrees: 0, speed: 0, radius: 22),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.20, yPercent: 0.30, angleDegrees: 0, speed: 0, radius: 22),
+            InitialObjectDefinition(type: .paper, xPercent: 0.5, yPercent: 0.86, angleDegrees: 0, speed: 120, radius: 22),
+            InitialObjectDefinition(type: .paper, xPercent: 0.5, yPercent: 0.75, angleDegrees: 0, speed: 120, radius: 22)
         ]
     )
 
@@ -207,10 +207,10 @@ enum LevelLibrary {
         launchSpeed: 110,
         launchedRockRadius: 22,
         initialObjects: [
-            InitialObjectDefinition(type: .scissors, xPercent: 0.15, yPercent: 0.75, angleDegrees: 0, speed: 30, radius: 22),
-            InitialObjectDefinition(type: .paper, xPercent: 0.65, yPercent: 0.75, angleDegrees: 0, speed: 0, radius: 22),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.75, yPercent: 0.4, angleDegrees: 180, speed: 30, radius: 22),
-            InitialObjectDefinition(type: .paper, xPercent: 0.35, yPercent: 0.4, angleDegrees: 0, speed: 0, radius: 22)
+            InitialObjectDefinition(type: .scissors, xPercent: 0.35, yPercent: 0.15, angleDegrees: 0, speed: 0, radius: 22),
+            InitialObjectDefinition(type: .paper, xPercent: 0.65, yPercent: 0.15, angleDegrees: 0, speed: 0, radius: 22),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.75, yPercent: 0.84, angleDegrees: 180, speed: 120, radius: 22),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.35, yPercent: 0.94, angleDegrees: 0, speed: 120, radius: 22)
         ]
     )
 
@@ -1665,5 +1665,33 @@ extension LevelLibrary {
             launchedRockRadius: 20,
             initialObjects: objects
         )
+    }
+}
+
+
+extension LevelLibrary {
+    /// Continuous random positions, independently random directions and speeds.
+    /// Rejection sampling leaves room between objects even on a compact 320x252 arena.
+    static func modeLevel<R: RandomNumberGenerator>(for mode: GameMode, using generator: inout R) -> LevelDefinition {
+        let count = Int.random(in: mode == .bet ? 9...18 : 6...12, using: &generator)
+        var types: [ObjectType] = mode == .bet ? [.rock, .paper, .scissors] : [.paper, .scissors]
+        let choices: [ObjectType] = mode == .bet ? [.rock, .paper, .scissors] : [.paper, .scissors]
+        while types.count < count { types.append(choices[Int.random(in: 0..<choices.count, using: &generator)]) }
+        types.shuffle(using: &generator)
+        var objects: [InitialObjectDefinition] = []
+        for type in types {
+            var point = CGPoint.zero
+            repeat {
+                point = CGPoint(x: CGFloat.random(in: 0.10...0.90, using: &generator),
+                                y: CGFloat.random(in: 0.15...0.90, using: &generator))
+            } while objects.contains(where: {
+                hypot((point.x - $0.xPercent) * 272, (point.y - $0.yPercent) * 180) < 28
+            })
+            objects.append(InitialObjectDefinition(type: type, xPercent: point.x, yPercent: point.y,
+                                                   angleDegrees: CGFloat.random(in: 0..<360, using: &generator),
+                                                   speed: CGFloat.random(in: 80...180, using: &generator), radius: 14))
+        }
+        return LevelDefinition(levelNumber: 0, startingAmmo: 0, launchSpeed: 200,
+                               launchedRockRadius: 18, initialObjects: objects)
     }
 }

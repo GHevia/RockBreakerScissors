@@ -26,6 +26,7 @@ final class RockBreakerScissorsUITests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments = ["-highestUnlockedLevel", "100", "-completedTutorialLevels", "31"]
         app.launch()
+        app.buttons["Rock Mode"].tap()
         app.buttons["Select Level"].tap()
         app.buttons["Lesson 1"].tap()
         let firstMessage = app.staticTexts["Your goal is to turn every object into rock. Rock turns scissors into rock when they touch."]
@@ -41,6 +42,7 @@ final class RockBreakerScissorsUITests: XCTestCase {
     func testRandomModeCanBeSkippedAndReplayed() {
         let app = XCUIApplication()
         app.launch()
+        app.buttons["Rock Mode"].tap()
         app.buttons["Random Levels"].tap()
         XCTAssertTrue(app.staticTexts["Random 1"].waitForExistence(timeout: 5))
         app.buttons["Skip"].tap()
@@ -48,7 +50,30 @@ final class RockBreakerScissorsUITests: XCTestCase {
         app.buttons["Restart"].tap()
         XCTAssertTrue(app.staticTexts["Random 2"].exists)
         app.buttons["Menu"].tap()
+        app.buttons["Rock Mode"].tap()
         XCTAssertTrue(app.buttons["Random Levels"].exists)
+    }
+
+    func testBetHasPreviewChoiceAndCountdown() {
+        let app = XCUIApplication()
+        app.launch()
+        app.buttons["Bet"].tap()
+        XCTAssertTrue(app.staticTexts["Who will be last? Choose before they move."].waitForExistence(timeout: 5))
+        app.buttons["Paper"].tap()
+        XCTAssertTrue(app.staticTexts["Your pick: Paper"].exists)
+        XCTAssertTrue(app.staticTexts["Starting in 3"].waitForExistence(timeout: 1))
+        app.buttons["Menu"].tap()
+        app.buttons["Bet"].tap()
+        XCTAssertTrue(app.buttons["Rock"].exists)
+    }
+
+    func testBalanceExplainsSurvivalAndStartsTheTimer() {
+        let app = XCUIApplication()
+        app.launch()
+        app.buttons["Balance"].tap()
+        XCTAssertTrue(app.buttons["Play"].waitForExistence(timeout: 5))
+        app.buttons["Play"].tap()
+        XCTAssertTrue(app.staticTexts["Unlimited rocks"].exists)
     }
 
     func testLaunchPerformance() throws {

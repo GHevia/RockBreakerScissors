@@ -8,7 +8,7 @@ import CoreGraphics
 import Foundation
 import SpriteKit
 
-enum ObjectType {
+enum ObjectType: Hashable {
     case rock
     case paper
     case scissors

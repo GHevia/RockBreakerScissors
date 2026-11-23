@@ -1,9 +1,15 @@
 import Foundation
 import SwiftUI
 
-final class GameViewModel: ObservableObject {
-    enum Phase { case menu, playing, won, lost }
+enum GameMode { case rock, balance, bet }
 
+final class GameViewModel: ObservableObject {
+    enum Phase { case menu, betting, countdown, playing, won, lost }
+
+    @Published private(set) var mode: GameMode = .rock
+    @Published var balanceTime: TimeInterval = 0
+    @Published private(set) var betChoice: ObjectType?
+    @Published private(set) var countdown = 3
     @Published var phase: Phase = .menu
     @Published var ammoRemaining = 0
     @Published var currentLevelIndex = 0
@@ -19,16 +25,22 @@ final class GameViewModel: ObservableObject {
     @AppStorage("campaignCompleted") var campaignCompleted = false
     @AppStorage("completedTutorialLevels") private var completedTutorialLevels = 0
 
+    @AppStorage("balanceBestTime") var balanceBestTime: Double = 0
+
     let levels = LevelLibrary.allLevels
 
     init(defaults: UserDefaults = .standard) {
+        _balanceBestTime = AppStorage(wrappedValue: 0, "balanceBestTime", store: defaults)
         _highestUnlockedLevel = AppStorage(wrappedValue: 1, "highestUnlockedLevel", store: defaults)
         _campaignCompleted = AppStorage(wrappedValue: false, "campaignCompleted", store: defaults)
         _completedTutorialLevels = AppStorage(wrappedValue: 0, "completedTutorialLevels", store: defaults)
     }
 
     var tutorialMessages: [String] {
-        guard !isRandomMode else { return [] }
+        if mode == .balance {
+            return ["Keep at least one paper and one scissors alive for as long as possible. Fire unlimited rocks to control the population. The timer starts when you press Play; losing either paper or scissors ends the round."]
+        }
+        guard mode == .rock, !isRandomMode else { return [] }
         switch levelNumber {
         case 1:
             return [
@@ -64,11 +76,11 @@ final class GameViewModel: ObservableObject {
         }
     }
 
-    var isRandomMode: Bool { randomLevel != nil }
+    var isRandomMode: Bool { mode == .rock && randomLevel != nil }
     var currentLevel: LevelDefinition { randomLevel ?? levels[currentLevelIndex] }
     var levelNumber: Int { currentLevel.levelNumber }
-    var hasNextLevel: Bool { !isRandomMode && currentLevelIndex < levels.count - 1 }
-    var isCampaignVictory: Bool { phase == .won && !isRandomMode && currentLevelIndex == levels.count - 1 }
+    var hasNextLevel: Bool { mode == .rock && !isRandomMode && currentLevelIndex < levels.count - 1 }
+    var isCampaignVictory: Bool { phase == .won && mode == .rock && !isRandomMode && currentLevelIndex == levels.count - 1 }
     var continueLevelIndex: Int { min(max(highestUnlockedLevel - 1, 0), levels.count - 1) }
     var isLastTutorialStep: Bool { tutorialStep == tutorialMessages.count - 1 }
     var hasInstructions: Bool { !tutorialMessages.isEmpty }
@@ -77,11 +89,14 @@ final class GameViewModel: ObservableObject {
         return tutorialMessages[tutorialStep]
     }
     var levelTitle: String {
+        if mode == .balance { return "Balance" }
+        if mode == .bet { return "Bet" }
         if isRandomMode { return "Random \(randomRound)" }
         return currentLevel.isTutorial ? "Lesson \(levelNumber)" : "Level \(levelNumber)"
     }
 
     func startGame(at levelIndex: Int? = nil, replayInstructions: Bool = false) {
+        mode = .rock
         randomLevel = nil
         let requested = levelIndex ?? currentLevelIndex
         currentLevelIndex = min(max(0, requested), continueLevelIndex)
@@ -99,6 +114,8 @@ final class GameViewModel: ObservableObject {
     }
 
     func restartLevel() {
+        if mode == .balance { startBalanceGame(); return }
+        if mode == .bet { startBetGame(); return }
         // Replays preserve the puzzle, including a generated random layout.
         prepareRound(showInstructions: false)
     }
@@ -128,14 +145,14 @@ final class GameViewModel: ObservableObject {
     }
 
     func useAmmo() {
-        if ammoRemaining > 0 { ammoRemaining -= 1 }
+        if mode == .rock && ammoRemaining > 0 { ammoRemaining -= 1 }
     }
 
     func completeLevel(finalObjectType: ObjectType) {
-        guard phase == .playing else { return }
+        guard mode == .rock, phase == .playing else { return }
         resultObjectType = finalObjectType
         showTutorial = false
-        if !isRandomMode {
+        if mode == .rock && !isRandomMode {
             highestUnlockedLevel = min(levels.count, max(highestUnlockedLevel, currentLevelIndex + 2))
             if currentLevelIndex == levels.count - 1 { campaignCompleted = true }
         }
@@ -143,13 +160,14 @@ final class GameViewModel: ObservableObject {
     }
 
     func failLevel(finalObjectType: ObjectType) {
-        guard phase == .playing else { return }
+        guard mode == .rock, phase == .playing else { return }
         resultObjectType = finalObjectType
         showTutorial = false
         phase = .lost
     }
 
     func goToNextLevel() {
+        guard mode == .rock else { restartLevel(); return }
         if isRandomMode { skipRandomLevel(); return }
         guard hasNextLevel else { goToMenu(); return }
         currentLevelIndex += 1
@@ -167,10 +185,63 @@ final class GameViewModel: ObservableObject {
     }
 
     func skipRandomLevel() {
+        mode = .rock
         var generator = SystemRandomNumberGenerator()
         randomLevel = LevelLibrary.randomLevel(using: &generator)
         randomRound += 1
         prepareRound(showInstructions: false)
+    }
+
+    var canFire: Bool {
+        phase == .playing && !showTutorial && (mode == .balance || (mode == .rock && ammoRemaining > 0))
+    }
+
+    static func timeLabel(_ time: TimeInterval) -> String {
+        String(format: "%.1f s", time)
+    }
+
+    func startBalanceGame() {
+        mode = .balance
+        balanceTime = 0
+        betChoice = nil
+        var generator = SystemRandomNumberGenerator()
+        randomLevel = LevelLibrary.modeLevel(for: .balance, using: &generator)
+        prepareRound(showInstructions: true)
+    }
+
+    func finishBalance(at time: TimeInterval) {
+        guard mode == .balance, phase == .playing, !showTutorial else { return }
+        balanceTime = time
+        balanceBestTime = max(balanceBestTime, time)
+        phase = .lost
+    }
+
+    func startBetGame() {
+        mode = .bet
+        betChoice = nil
+        countdown = 3
+        var generator = SystemRandomNumberGenerator()
+        randomLevel = LevelLibrary.modeLevel(for: .bet, using: &generator)
+        prepareRound(showInstructions: false)
+        phase = .betting
+    }
+
+    func chooseBet(_ choice: ObjectType) {
+        guard mode == .bet, phase == .betting else { return }
+        betChoice = choice
+        countdown = 3
+        phase = .countdown
+    }
+
+    func advanceCountdown() {
+        guard mode == .bet, phase == .countdown else { return }
+        if countdown > 1 { countdown -= 1 } else { phase = .playing }
+    }
+
+    func resolveBet(winner: ObjectType) {
+        guard mode == .bet, phase == .playing else { return }
+        resultObjectType = winner
+        phase = winner == betChoice ? .won : .lost
     }
 
     func resetProgress() {
