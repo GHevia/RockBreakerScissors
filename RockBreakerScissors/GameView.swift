@@ -12,7 +12,6 @@ struct GameView: View {
     var body: some View {
         VStack(spacing: 0) {
             topBar
-            if viewModel.mode == .bet { betBar }
 
             GeometryReader { arenaGeo in
                 ZStack {
@@ -22,6 +21,9 @@ struct GameView: View {
                     SpriteView(scene: scene)
                         .ignoresSafeArea()
 
+                    if viewModel.mode == .bet {
+                        VStack { betBar; Spacer() }
+                    }
                     if viewModel.phase == .won || viewModel.phase == .lost {
                         ScrollView { resultOverlay.padding(.vertical, 16) }
                     }
@@ -90,7 +92,7 @@ struct GameView: View {
                 }
             }
 
-            bottomBar
+            if viewModel.mode != .bet { bottomBar }
         }
         .background(backgroundColor.ignoresSafeArea())
     }
@@ -106,7 +108,16 @@ struct GameView: View {
 
             Spacer()
 
-            levelChip(title: viewModel.levelTitle)
+            if viewModel.mode == .bet {
+                VStack(spacing: 2) {
+                    Text("Bet").font(.headline)
+                    Text(viewModel.betRecordLabel).font(.subheadline).monospacedDigit()
+                }
+                Spacer()
+                smallButton(title: "New Round") { viewModel.restartLevel() }
+            } else {
+                levelChip(title: viewModel.levelTitle)
+            }
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 12)
@@ -166,8 +177,11 @@ struct GameView: View {
                 Text("Your pick: \(choice.displayName.capitalized)").font(.subheadline.bold())
             }
         }
-        .frame(height: 100)
-        .padding(12)
+        .padding(8)
+        .background(.ultraThinMaterial)
+        .cornerRadius(12)
+        .padding(.horizontal, 12)
+        .padding(.top, 8)
     }
 
     private var resultTitle: String {
@@ -195,7 +209,10 @@ struct GameView: View {
                 if viewModel.mode == .balance {
                     Text("Survived \(GameViewModel.timeLabel(viewModel.balanceTime))")
                     Text("Best: \(GameViewModel.timeLabel(viewModel.balanceBestTime))")
-                    Text("Paper or scissors disappeared.").font(.subheadline).foregroundColor(.secondary)
+                    Text(viewModel.balanceLossMessage).font(.subheadline).foregroundColor(.secondary)
+                } else if viewModel.mode == .bet, let winner = viewModel.resultObjectType {
+                    Text("\(winner.displayName.capitalized) won.").font(.subheadline.bold())
+                    Text(viewModel.betRecordLabel).monospacedDigit()
                 } else if viewModel.isCampaignVictory {
                     Text("You completed all \(viewModel.levels.count) campaign levels!")
                         .font(.subheadline.bold())
@@ -234,7 +251,8 @@ struct GameView: View {
         }
         .padding(24)
         .frame(maxWidth: 320)
-        .background(.ultraThinMaterial)
+        .background(backgroundColor.opacity(0.60))
+        .overlay(RoundedRectangle(cornerRadius: 24).stroke(Color.primary.opacity(0.18)))
         .cornerRadius(24)
         .shadow(radius: 10)
     }
@@ -256,7 +274,7 @@ struct GameView: View {
 
         scene.canLaunchRock = { viewModel.canFire }
         scene.onBalanceTick = { viewModel.balanceTime = $0 }
-        scene.onBalanceEnd = { viewModel.finishBalance(at: $0) }
+        scene.onBalanceEnd = { time, missing in viewModel.finishBalance(at: time, missing: missing) }
 
         scene.didUseAmmo = {
             viewModel.useAmmo()

@@ -136,3 +136,18 @@ persistence, countdown/choice transitions, frozen bet previews, and mode
 isolation. UI tests cover the three-mode navigation and countdown entry.
 These require Xcode; this Linux environment cannot execute or visually
 verify the new iOS game flows.
+
+1.1 polish
+----------
+Balance uses radius 14 for initial objects and launched rocks. New Round
+within Balance skips the description and immediately starts the next timer;
+entering Balance from the main menu still shows the instructions. The end
+callback names the missing population(s), and the results card uses a 60%
+background so the frozen final arena remains visible in every mode.
+
+Bet controls float over the arena. Removing the separate selection panel
+and bottom bar gives the arena substantially more vertical space. Its
+header, results, menu description, and settings show wins/completed rounds
+and a rounded win percentage. Only resolved rounds count; duplicate result
+callbacks and abandoned previews/countdowns do not count. Refresh Betting
+Record in Settings clears just those two saved counters.

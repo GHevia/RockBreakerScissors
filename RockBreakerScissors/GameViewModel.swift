@@ -7,6 +7,7 @@ final class GameViewModel: ObservableObject {
     enum Phase { case menu, betting, countdown, playing, won, lost }
 
     @Published private(set) var mode: GameMode = .rock
+    @Published private(set) var balanceMissingTypes: [ObjectType] = []
     @Published var balanceTime: TimeInterval = 0
     @Published private(set) var betChoice: ObjectType?
     @Published private(set) var countdown = 3
@@ -27,9 +28,14 @@ final class GameViewModel: ObservableObject {
 
     @AppStorage("balanceBestTime") var balanceBestTime: Double = 0
 
+    @AppStorage("betWins") private(set) var betWins = 0
+    @AppStorage("betRounds") private(set) var betRounds = 0
+
     let levels = LevelLibrary.allLevels
 
     init(defaults: UserDefaults = .standard) {
+        _betWins = AppStorage(wrappedValue: 0, "betWins", store: defaults)
+        _betRounds = AppStorage(wrappedValue: 0, "betRounds", store: defaults)
         _balanceBestTime = AppStorage(wrappedValue: 0, "balanceBestTime", store: defaults)
         _highestUnlockedLevel = AppStorage(wrappedValue: 1, "highestUnlockedLevel", store: defaults)
         _campaignCompleted = AppStorage(wrappedValue: false, "campaignCompleted", store: defaults)
@@ -114,7 +120,7 @@ final class GameViewModel: ObservableObject {
     }
 
     func restartLevel() {
-        if mode == .balance { startBalanceGame(); return }
+        if mode == .balance { startBalanceGame(showInstructions: false); return }
         if mode == .bet { startBetGame(); return }
         // Replays preserve the puzzle, including a generated random layout.
         prepareRound(showInstructions: false)
@@ -200,20 +206,40 @@ final class GameViewModel: ObservableObject {
         String(format: "%.1f s", time)
     }
 
-    func startBalanceGame() {
+    func startBalanceGame(showInstructions: Bool = true) {
         mode = .balance
         balanceTime = 0
+        balanceMissingTypes = []
         betChoice = nil
         var generator = SystemRandomNumberGenerator()
         randomLevel = LevelLibrary.modeLevel(for: .balance, using: &generator)
-        prepareRound(showInstructions: true)
+        prepareRound(showInstructions: showInstructions)
     }
 
-    func finishBalance(at time: TimeInterval) {
+    func finishBalance(at time: TimeInterval, missing: [ObjectType]) {
         guard mode == .balance, phase == .playing, !showTutorial else { return }
         balanceTime = time
+        balanceMissingTypes = missing
         balanceBestTime = max(balanceBestTime, time)
         phase = .lost
+    }
+
+    var balanceLossMessage: String {
+        if balanceMissingTypes.contains(.paper) && balanceMissingTypes.contains(.scissors) {
+            return "Paper and scissors ran out."
+        }
+        if balanceMissingTypes.contains(.paper) { return "Paper ran out." }
+        return "Scissors ran out."
+    }
+
+    var betRecordLabel: String {
+        let percentage = betRounds == 0 ? 0 : Int((Double(betWins) / Double(betRounds) * 100).rounded())
+        return "\(betWins)/\(betRounds) · \(percentage)%"
+    }
+
+    func resetBettingRecord() {
+        betWins = 0
+        betRounds = 0
     }
 
     func startBetGame() {
@@ -241,6 +267,8 @@ final class GameViewModel: ObservableObject {
     func resolveBet(winner: ObjectType) {
         guard mode == .bet, phase == .playing else { return }
         resultObjectType = winner
+        betRounds += 1
+        if winner == betChoice { betWins += 1 }
         phase = winner == betChoice ? .won : .lost
     }
 

@@ -6,7 +6,7 @@ final class GameScene: SKScene {
 
     var mode: GameMode = .rock
     var onBalanceTick: ((TimeInterval) -> Void)?
-    var onBalanceEnd: ((TimeInterval) -> Void)?
+    var onBalanceEnd: ((TimeInterval, [ObjectType]) -> Void)?
     private var lastUpdateTime: TimeInterval?
     private var survivalTime: TimeInterval = 0
     var onWin: ((ObjectType) -> Void)?
@@ -610,7 +610,10 @@ final class GameScene: SKScene {
         if mode == .balance {
             if paperCount == 0 || scissorsCount == 0 {
                 isShowingResult = true
-                onBalanceEnd?(survivalTime)
+                var missing: [ObjectType] = []
+                if paperCount == 0 { missing.append(.paper) }
+                if scissorsCount == 0 { missing.append(.scissors) }
+                onBalanceEnd?(survivalTime, missing)
             }
             return
         }

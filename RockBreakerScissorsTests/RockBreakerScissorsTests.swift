@@ -1,4 +1,5 @@
 import CoreGraphics
+import SpriteKit
 import XCTest
 @testable import RockBreakerScissors
 
@@ -318,19 +319,81 @@ final class RockBreakerScissorsTests: XCTestCase {
             XCTAssertTrue(model.canFire)
             for _ in 0..<20 { model.useAmmo() }
             XCTAssertTrue(model.canFire)
-            model.finishBalance(at: 12.5)
+            model.finishBalance(at: 12.5, missing: [.paper])
             XCTAssertEqual(model.phase, .lost)
             XCTAssertEqual(model.balanceBestTime, 12.5)
             XCTAssertEqual(GameViewModel(defaults: defaults).balanceBestTime, 12.5)
             XCTAssertEqual(model.highestUnlockedLevel, 25)
             model.startBalanceGame()
             model.skipTutorial()
-            model.finishBalance(at: 3)
+            model.finishBalance(at: 3, missing: [.scissors])
             XCTAssertEqual(model.balanceBestTime, 12.5)
             model.resetProgress()
             XCTAssertEqual(model.balanceBestTime, 12.5)
             model.startGame(at: 0)
             XCTAssertEqual(model.mode, .rock)
+        }
+    }
+
+    func testBalanceReplaySkipsInstructionsAndReportsTheMissingType() {
+        withModel { model, _ in
+            model.startBalanceGame()
+            XCTAssertTrue(model.showTutorial)
+            model.skipTutorial()
+            model.finishBalance(at: 4, missing: [.paper])
+            XCTAssertEqual(model.balanceLossMessage, "Paper ran out.")
+            model.restartLevel()
+            XCTAssertFalse(model.showTutorial)
+            XCTAssertTrue(model.canFire)
+            XCTAssertTrue(model.balanceMissingTypes.isEmpty)
+            model.finishBalance(at: 5, missing: [.scissors])
+            XCTAssertEqual(model.balanceLossMessage, "Scissors ran out.")
+            model.restartLevel()
+            model.finishBalance(at: 6, missing: [.paper, .scissors])
+            XCTAssertEqual(model.balanceLossMessage, "Paper and scissors ran out.")
+        }
+    }
+
+    func testBalanceFiredRocksMatchTheInitialObjectSize() {
+        var generator = SeededGenerator(state: 17)
+        let level = LevelLibrary.modeLevel(for: .balance, using: &generator)
+        XCTAssertTrue(level.initialObjects.allSatisfy { $0.radius == level.launchedRockRadius })
+        let scene = GameScene(size: CGSize(width: 320, height: 568))
+        scene.mode = .balance
+        scene.canLaunchRock = { true }
+        scene.load(level: level)
+        scene.launchRock(toward: CGPoint(x: 160, y: 400))
+        let objects = scene.children.compactMap { $0 as? SKSpriteNode }.filter { ["paper", "scissors", "rock"].contains($0.name ?? "") }
+        XCTAssertEqual(objects.count, level.initialObjects.count + 1)
+        XCTAssertTrue(objects.allSatisfy { $0.size == objects[0].size })
+    }
+
+    func testBetRecordCountsCompletedRoundsOncePersistsAndCanBeResetIndependently() {
+        withModel { model, defaults in
+            model.highestUnlockedLevel = 40
+            model.balanceBestTime = 12
+            XCTAssertEqual(model.betRecordLabel, "0/0 · 0%")
+            for winner in [ObjectType.rock, .paper, .rock, .scissors, .paper] {
+                model.startBetGame()
+                model.chooseBet(.rock)
+                for _ in 0..<3 { model.advanceCountdown() }
+                model.resolveBet(winner: winner)
+                model.resolveBet(winner: winner) // A duplicate callback must not count twice.
+            }
+            XCTAssertEqual(model.betWins, 2)
+            XCTAssertEqual(model.betRounds, 5)
+            XCTAssertEqual(model.betRecordLabel, "2/5 · 40%")
+            let reopened = GameViewModel(defaults: defaults)
+            XCTAssertEqual(reopened.betRecordLabel, "2/5 · 40%")
+            model.startBetGame()
+            model.chooseBet(.paper)
+            model.goToMenu()
+            XCTAssertEqual(model.betRounds, 5) // Abandoned rounds are excluded.
+            model.resetBettingRecord()
+            XCTAssertEqual(model.betRecordLabel, "0/0 · 0%")
+            XCTAssertEqual(GameViewModel(defaults: defaults).betRecordLabel, "0/0 · 0%")
+            XCTAssertEqual(model.highestUnlockedLevel, 40)
+            XCTAssertEqual(model.balanceBestTime, 12)
         }
     }
 
@@ -391,7 +454,10 @@ final class RockBreakerScissorsTests: XCTestCase {
         var time: TimeInterval = 0
         var ended = false
         scene.onBalanceTick = { time = $0 }
-        scene.onBalanceEnd = { _ in ended = true }
+        scene.onBalanceEnd = { _, missing in
+            ended = true
+            XCTAssertEqual(missing, [.scissors])
+        }
         scene.load(level: LevelDefinition(levelNumber: 0, startingAmmo: 0, launchSpeed: 100, launchedRockRadius: 20, initialObjects: [
             InitialObjectDefinition(type: .paper, xPercent: 0.3, yPercent: 0.5, angleDegrees: 0, speed: 0, radius: 20),
             InitialObjectDefinition(type: .scissors, xPercent: 0.7, yPercent: 0.5, angleDegrees: 0, speed: 0, radius: 20)

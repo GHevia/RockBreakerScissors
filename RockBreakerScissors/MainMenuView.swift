@@ -62,7 +62,7 @@ struct MainMenuView: View {
                 modeButton("Balance", detail: "Keep paper and scissors alive · Best: \(GameViewModel.timeLabel(viewModel.balanceBestTime))") {
                     viewModel.startBalanceGame()
                 }
-                modeButton("Bet", detail: "Read the board. Pick the last type standing.") { viewModel.startBetGame() }
+                modeButton("Bet", detail: "Pick the last type standing · \(viewModel.betRecordLabel)") { viewModel.startBetGame() }
             }
         }
     }
@@ -115,6 +115,11 @@ struct MainMenuView: View {
                 .font(.headline)
 
             Toggle("Dark Mode", isOn: $useDarkMode)
+
+            Text("Bet record: \(viewModel.betRecordLabel)")
+                .font(.subheadline).monospacedDigit()
+            Button("Refresh Betting Record") { viewModel.resetBettingRecord() }
+                .frame(maxWidth: .infinity)
 
             Button(role: .destructive) {
                 viewModel.resetProgress()

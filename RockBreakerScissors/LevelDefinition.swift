@@ -1692,6 +1692,6 @@ extension LevelLibrary {
                                                    speed: CGFloat.random(in: 80...180, using: &generator), radius: 14))
         }
         return LevelDefinition(levelNumber: 0, startingAmmo: 0, launchSpeed: 200,
-                               launchedRockRadius: 18, initialObjects: objects)
+                               launchedRockRadius: mode == .balance ? 14 : 18, initialObjects: objects)
     }
 }
