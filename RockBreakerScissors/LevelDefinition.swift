@@ -1973,7 +1973,7 @@ enum LevelLibrary {
         initialObjects: [
             InitialObjectDefinition(type: .paper, xPercent: 0.35, yPercent: 0.78, angleDegrees: 0, speed: 0, radius: 18),
             InitialObjectDefinition(type: .paper, xPercent: 0.65, yPercent: 0.78, angleDegrees: 0, speed: 0, radius: 18),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.10, yPercent: 0.78, angleDegrees: 0, speed: 210, radius: 18),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.15, yPercent: 0.78, angleDegrees: 0, speed: 210, radius: 18),
             InitialObjectDefinition(type: .paper, xPercent: 0.50, yPercent: 0.50, angleDegrees: 0, speed: 0, radius: 18),
             InitialObjectDefinition(type: .scissors, xPercent: 0.82, yPercent: 0.50, angleDegrees: 180, speed: 190, radius: 18),
             InitialObjectDefinition(type: .rock, xPercent: 0.50, yPercent: 0.20, angleDegrees: 0, speed: 0, radius: 18)
