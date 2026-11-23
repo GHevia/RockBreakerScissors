@@ -132,7 +132,7 @@ struct GameView: View {
                         .font(.subheadline.bold())
                         .multilineTextAlignment(.center)
                 } else if let resultObjectType = viewModel.resultObjectType {
-                    Text(viewModel.resultMessage ?? "All objects are \(resultObjectType.displayName).")
+                    Text("All objects are \(resultObjectType.displayName).")
                         .font(.subheadline.bold())
                         .multilineTextAlignment(.center)
                         .foregroundColor(.secondary)
@@ -179,7 +179,7 @@ struct GameView: View {
         }
 
         scene.onLose = { finalObjectType in
-            viewModel.failLevel(finalObjectType: finalObjectType, message: scene.lossMessage)
+            viewModel.failLevel(finalObjectType: finalObjectType)
         }
 
         scene.canLaunchRock = {

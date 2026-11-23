@@ -167,7 +167,7 @@ struct LevelSelectView: View {
                     .frame(height: 62)
 
                 if unlocked {
-                    Text(index < 5 ? "Lesson \(index + 1)" : "\(index + 1)")
+                    Text(index < 10 ? "Lesson \(index + 1)" : "\(index + 1)")
                         .minimumScaleFactor(0.7)
                         .font(.headline)
                 } else {

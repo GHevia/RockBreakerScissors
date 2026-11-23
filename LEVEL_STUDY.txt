@@ -1,26 +1,35 @@
 Rock Breaker Scissors: campaign progression and playability study
 
-The campaign stays at 100 levels. Levels 1–5 are lessons, followed by the
-original opening layouts at slower speeds. The fourth original opening
-layout gets slight diagonal motion so its lanes can meet; level 10 uses
-four targets in two clear lanes instead of six separated targets.
+The campaign stays at 100 levels. Levels 1–10 are lessons, followed by the
+slower opening layouts at levels 11–15. The five additional lessons replace
+five late review layouts; the two existing 99/100 finales are preserved.
+The user's level 5 layout, including the moving paper in the lower lane,
+is unchanged.
 
 Progression
 -----------
-1–5     Lessons: aim, bouncing, moving targets, loss conditions, paper,
-        protecting scissors, and the rock -> paper -> scissors delivery chain.
-6–10    Easy play: 2–4 large targets, 100–120 speed, eight shots, no walls.
-11–20   Faster movement: 130–166 speed, large targets, eight shots.
-21–30   Smaller targets: radius 18, six shots, no walls or starting rocks.
-31–40   Starting rocks: protect scissors from existing rocks; six shots.
-41–50   Walls: dividers, shelves, gates; five shots and normal-sized targets.
-51–60   Stationary puzzles: includes fully stationary paper/scissors boards.
-61–70   Mixed sizes and speeds: combine the previously learned mechanics.
-71–80   Fewer shots: four shots, combined wall and trajectory puzzles.
-81–90   Crowded arenas: more populations to track, with four shots.
-91–100  Final combinations, ending in the open-lane 99/100 finales.
+1       Aim and the goal: turn every object into rock.
+2       Bouncing rocks and multiple targets.
+3       Moving targets and leading a shot.
+4       Paper/scissors conversion with a forgiving setup.
+5       Moving shots retain their motion when converted; cross-lane practice.
+6       The all-scissors deadline: the pre-shot exception ends here.
+7       Put a rock in play while scissors are still clearing paper.
+8       Keep scissors alive: only rocks and paper is a lost cause.
+9       Deliver paper to stationary scissors; keep a backup rock alive.
+10      Put the timing and population rules together.
+11–15   Easy play: 2–4 large targets, 100–120 speed, eight shots, no walls.
+16–25   Faster movement: 130–166 speed, large targets, eight shots.
+26–35   Smaller targets: radius 18, six shots, no walls or starting rocks.
+36–45   Starting rocks: protect scissors from existing rocks; six shots.
+46–55   Walls: dividers, shelves, gates; five shots and normal-sized targets.
+56–65   Stationary puzzles: includes fully stationary paper/scissors boards.
+66–75   Mixed sizes and speeds: combine the previously learned mechanics.
+76–85   Fewer shots: four shots, combined wall and trajectory puzzles.
+86–95   Crowded arenas: more populations to track, with four shots.
+96–100  Final combinations, ending in the open-lane 99/100 finales.
 
-New-mechanic instructions appear at 11, 21, 31, 41, 51, 61, 71, 81, and 91.
+New-mechanic instructions appear at 16, 26, 36, 46, 56, 66, 76, 86, and 96.
 Instructions pause play and remain until acknowledged or skipped. Selecting
 any lesson explicitly always shows its text, even with level-100 progress.
 Continue remembers acknowledged lessons; Restart does not repeat them. Help
@@ -31,12 +40,15 @@ Rules and stationary puzzles
 A stationary paper/scissors board is NOT inherently impossible. Shoot a rock
 into paper: that projectile retains its velocity as paper. It can then reach
 stationary scissors, become moving scissors, and convert other paper. The
-audit searches this strategy; levels 51–54 preserve fully stationary puzzles.
+audit searches this strategy; levels 56–59 preserve fully stationary puzzles.
 
-Scissors-only starting setups remain safe until the player fires. Once the
-player has fired, all-paper or all-scissors outcomes lose. A board with paper
-but no scissors is also lost: new rock shots cannot restore scissors. That
-case now ends with an explanation instead of leaving the player stuck.
+Only lessons 1–5 allow a scissors-only arena before the first shot. From
+lesson 6 onward, including random rounds, all scissors loses immediately,
+even before the player fires. All paper always loses. Regular levels that
+started with only scissors (now 23–25) have paper added. Mixed rocks and
+paper do not trigger a loss screen: gameplay continues until a uniform
+outcome. The offline solution search may prune that mathematically unwinnable
+branch, but this is not a gameplay loss condition.
 
 Audit method and results
 ------------------------
@@ -49,15 +61,18 @@ fixed 1/60-second movement, radius scale, launch position, boundaries, wall
 bounces, conversion order, ammunition, and terminal conditions.
 
 Each level is checked at arena sizes 320x568, 390x600, and 768x900. The search
-tries delayed shots after paper clears, earlier shots, and a targeted paper
-delivery strategy. Winning sequences have at most the available ammunition
+tries delayed shots where the board permits them, early shots to preserve
+a rock before paper disappears, and paper deliveries with backup rocks. Winning sequences have at most the available ammunition
 and run for at most 120 simulated seconds. These are example solutions,
 not optimal solutions or measured human difficulty scores.
 
 Result: 300/300 level/size combinations have a recorded simulated win.
 No startup object/object or object/wall overlaps were found. No layout loses
-within the first three idle seconds. Some puzzles can still lose if left
-unattended longer; instruction reading is paused and costs no game time.
+immediately at startup. Under the stricter all-scissors rule, some layouts
+now require quick shots. idle_loss_seconds records the first uniform loss
+within a three-second no-input check; -1 means no loss during that window.
+Instruction reading is paused and costs no game time. Winning sequences
+prove simulated solvability, not a comfortable human reaction window.
 
 The initial audit found startup overlaps in 18 level/size combinations,
 including objects inside walls. Those placements were nudged clear while

@@ -49,31 +49,34 @@ struct Sim {
         int counts[3]={};for(auto o:objects)++counts[o.type];
         if(counts[0]==int(objects.size()))return 1;
         if(counts[1]==int(objects.size()))return -1;
-        if(counts[2]==int(objects.size())&&(fired||ammo==0))return -1;
-        if(counts[1]>0&&counts[2]==0)return -1;
+        if(counts[2]==int(objects.size())&&(!(l.n>=1&&l.n<=5)||fired||ammo==0))return -1;
         return 0;
     }
 };
 Result search(Level l,double w,double h) {
-    // Seeded policy search: wait for paper to clear, then fire; also try early shots.
+    // Seeded policies try early rocks, safe delayed shots, and paper deliveries with backup rocks.
     mt19937 rng(l.n); uniform_real_distribution<double> unit(0,1);
-    for(int attempt=0;attempt<360;++attempt) {
-        Sim s(l,w,h); Result r; int next=30+(attempt%12)*30;
+    for(int attempt=0;attempt<540;++attempt) {
+        Sim s(l,w,h); Result r; int next=attempt<36?30+(attempt%12)*30:(attempt-36)%24;
         for(int frame=0;frame<7200;++frame) {
             bool paper=false;for(auto o:s.objects)paper|=o.type==1;
             bool delivery = attempt >= 180;
-            if(s.ammo>0&&frame>=next&&(!paper||(!delivery&&attempt>=36)||(delivery&&!s.fired))) {
+            if(s.ammo>0&&frame>=next&&(!paper||(!delivery&&attempt>=36)||(delivery&&s.ammo>=l.ammo-2))) {
                 double x=w*(.12+.76*unit(rng)),y=h*(.3+.6*unit(rng));
-                if(delivery && paper) {
+                if(delivery && paper && !s.fired) {
                     vector<Obj> papers;for(auto o:s.objects)if(o.type==1)papers.push_back(o);
                     auto target=papers[attempt%papers.size()];
                     x=target.x+(unit(rng)-.5)*target.r;
                     y=target.y+(unit(rng)-.5)*target.r;
                 }
                 s.shoot(x,y);r.shots.push_back({frame,x/w,y/h});
-                next=frame+12+(attempt%8)*24;
+                next=frame+(delivery?60+(attempt%8)*24:12+(attempt%8)*24);
             }
             int state=s.step();if(state!=0){if(state==1){r.won=true;r.frame=frame;return r;}break;}
+            // Solver pruning only: mixed rock/paper is not an in-game loss.
+            bool anyPaper=false,anyScissors=false;
+            for(auto o:s.objects){anyPaper|=o.type==1;anyScissors|=o.type==2;}
+            if(anyPaper&&!anyScissors)break;
         }
     }
     return {};

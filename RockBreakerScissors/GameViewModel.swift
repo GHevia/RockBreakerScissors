@@ -9,7 +9,6 @@ final class GameViewModel: ObservableObject {
     @Published var currentLevelIndex = 0
     @Published var reloadTrigger = 0
     @Published var resultObjectType: ObjectType?
-    @Published var resultMessage: String?
     @Published var showTutorial = false
     @Published var tutorialStep = 0
     @Published var ammoWarningID = UUID()
@@ -39,20 +38,27 @@ final class GameViewModel: ObservableObject {
         case 2:
             return ["Now try two targets. Your rocks keep bouncing and can turn more scissors into rock. Take your time: there is no time limit."]
         case 3:
-            return [
-                "These scissors move. Aim a little ahead of them, or use a bounce.",
-                "Be careful! After your first shot, you lose if the objects become all paper or all scissors. Until you fire, a scissors-only setup is safe."
-            ]
+            return ["These scissors move. Aim a little ahead of them, or let your rocks bounce until they meet."]
         case 4:
-            return [
-                "Paper turns rocks into paper. Scissors turn paper into scissors. Wait for the scissors to clear the paper, then fire rocks.",
-                "If only rocks and paper remain, you are bound to lose. Keep the scissors population alive until all the paper is gone!"
-            ]
+            return ["Paper turns rocks into paper. Scissors turn paper into scissors. In this lesson, let scissors clear the paper before firing rocks."]
         case 5:
             return [
-                "Practice the chain: let scissors clear both pieces of paper, then turn the scissors into rock. Firing too early can remove the scissors you need.",
-                "A rock that touches paper becomes moving paper. If it then touches scissors, it becomes moving scissors. You can use this chain to solve stationary puzzles later."
+                "Your shots keep moving when they change type. A rock can become moving paper, then moving scissors.",
+                "Use that chain to reach the paper in the lower lane, then finish with rocks."
             ]
+        case 6:
+            return [
+                "From now on, all scissors counts as a loss—even before you fire. You cannot just wait for scissors to eat all the paper: that would be too easy! You may need to fire quickly.",
+                "Keep a rock in play as the last paper disappears. Only lessons 1–5 let you wait safely before firing."
+            ]
+        case 7:
+            return ["Try hitting the lower scissors first. That gives you a rock in play while the upper scissors clear the paper."]
+        case 8:
+            return ["If only rocks and paper remain, you are bound to lose. Keep the scissors population alive until all paper is gone!"]
+        case 9:
+            return ["For stationary targets, send a rock into paper so it carries paper to scissors. Fire another rock off to the side to finish after the paper is gone."]
+        case 10:
+            return ["Put it together: fire before all scissors takes over, protect scissors while paper remains, and turn everything into rock. Restart whenever you want another try."]
         default:
             return currentLevel.introMessage.map { [$0] } ?? []
         }
@@ -72,21 +78,20 @@ final class GameViewModel: ObservableObject {
     }
     var levelTitle: String {
         if isRandomMode { return "Random \(randomRound)" }
-        return levelNumber <= 5 ? "Lesson \(levelNumber)" : "Level \(levelNumber)"
+        return currentLevel.isTutorial ? "Lesson \(levelNumber)" : "Level \(levelNumber)"
     }
 
     func startGame(at levelIndex: Int? = nil, replayInstructions: Bool = false) {
         randomLevel = nil
         let requested = levelIndex ?? currentLevelIndex
         currentLevelIndex = min(max(0, requested), continueLevelIndex)
-        let acknowledgedLesson = levelNumber <= 5 && completedTutorialLevels & (1 << (levelNumber - 1)) != 0
+        let acknowledgedLesson = currentLevel.isTutorial && completedTutorialLevels & (1 << (levelNumber - 1)) != 0
         prepareRound(showInstructions: replayInstructions || !acknowledgedLesson)
     }
 
     private func prepareRound(showInstructions: Bool) {
         ammoRemaining = currentLevel.startingAmmo
         resultObjectType = nil
-        resultMessage = nil
         tutorialStep = 0
         showTutorial = showInstructions && hasInstructions
         phase = .playing
@@ -110,7 +115,7 @@ final class GameViewModel: ObservableObject {
     }
 
     func skipTutorial() {
-        if showTutorial && !isRandomMode && levelNumber <= 5 {
+        if showTutorial && !isRandomMode && currentLevel.isTutorial {
             completedTutorialLevels |= 1 << (levelNumber - 1)
         }
         showTutorial = false
@@ -129,7 +134,6 @@ final class GameViewModel: ObservableObject {
     func completeLevel(finalObjectType: ObjectType) {
         guard phase == .playing else { return }
         resultObjectType = finalObjectType
-        resultMessage = nil
         showTutorial = false
         if !isRandomMode {
             highestUnlockedLevel = min(levels.count, max(highestUnlockedLevel, currentLevelIndex + 2))
@@ -138,10 +142,9 @@ final class GameViewModel: ObservableObject {
         phase = .won
     }
 
-    func failLevel(finalObjectType: ObjectType, message: String? = nil) {
+    func failLevel(finalObjectType: ObjectType) {
         guard phase == .playing else { return }
         resultObjectType = finalObjectType
-        resultMessage = message
         showTutorial = false
         phase = .lost
     }
@@ -177,7 +180,6 @@ final class GameViewModel: ObservableObject {
         currentLevelIndex = 0
         ammoRemaining = 0
         resultObjectType = nil
-        resultMessage = nil
         goToMenu()
     }
 

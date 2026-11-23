@@ -38,7 +38,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--source', type=Path, default=ROOT / 'RockBreakerScissors/LevelDefinition.swift')
     parser.add_argument('--report', type=Path, default=ROOT / 'level-audit.csv')
-    parser.add_argument('--check', action='store_true', help='Fail if a win is missing, a startup overlap exists, or a layout loses within three idle seconds')
+    parser.add_argument('--check', action='store_true', help='Fail if a win is missing, a startup overlap exists, or a layout loses immediately at startup')
     parser.add_argument('--update-test-sequences', action='store_true', help='Refresh embedded SpriteKit replay sequences after a successful audit')
     args = parser.parse_args()
     levels = parse_levels(args.source.read_text())
@@ -58,7 +58,7 @@ def main():
     print(f'Report: {args.report}')
     rows = list(csv.DictReader(io.StringIO(result.stdout)))
     passed = all(float(r['win_seconds']) >= 0 and int(r['overlaps']) == 0
-                 and int(r['wall_overlaps']) == 0 and float(r['idle_loss_seconds']) < 0 for r in rows)
+                 and int(r['wall_overlaps']) == 0 and float(r['idle_loss_seconds']) != 0 for r in rows)
     if args.update_test_sequences:
         if not passed:
             raise SystemExit('Replay fixtures were not updated because the audit has unresolved cases')

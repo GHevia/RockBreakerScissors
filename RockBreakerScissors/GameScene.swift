@@ -17,7 +17,6 @@ final class GameScene: SKScene {
     private var objectNodes: [SKSpriteNode] = []
     private var isShowingResult = false
     private var hasLaunchedRock = false
-    private(set) var lossMessage: String?
 
     private var launcherPosition: CGPoint = .zero
     private var aimDots: [SKShapeNode] = []
@@ -89,7 +88,6 @@ final class GameScene: SKScene {
         wallRects.removeAll()
         isShowingResult = false
         hasLaunchedRock = false
-        lossMessage = nil
         touchStartPoint = nil
 
         setupLauncher()
@@ -604,17 +602,12 @@ final class GameScene: SKScene {
             return
         }
 
-        // Scissors-only lessons and cleared paper setups remain safe until the first shot.
-        if scissorsCount == objectNodes.count && (hasLaunchedRock || !(canLaunchRock?() ?? true)) {
+        // Only the five lessons allow a scissors-only arena before the first shot.
+        let allowsScissors = currentLevel?.allowsScissorsBeforeFirstShot ?? false
+        if scissorsCount == objectNodes.count && (!allowsScissors || hasLaunchedRock || !(canLaunchRock?() ?? true)) {
             isShowingResult = true
             onLose?(.scissors)
             return
-        }
-
-        if paperCount > 0 && scissorsCount == 0 {
-            isShowingResult = true
-            lossMessage = "Only rocks and paper remain. Keep scissors alive until all the paper is gone!"
-            onLose?(.paper)
         }
     }
 }

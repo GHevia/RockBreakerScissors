@@ -56,6 +56,10 @@ struct LevelDefinition {
     let walls: [ArenaWallDefinition]
     let introMessage: String?
 
+    var isTutorial: Bool { (1...10).contains(levelNumber) }
+
+    var allowsScissorsBeforeFirstShot: Bool { (1...5).contains(levelNumber) }
+
     init(
         levelNumber: Int,
         startingAmmo: Int,
@@ -168,6 +172,7 @@ enum LevelLibrary {
         launchedRockRadius: 22,
         initialObjects: [
             InitialObjectDefinition(type: .scissors, xPercent: 0.18, yPercent: 0.72, angleDegrees: 0, speed: 120, radius: 22),
+            InitialObjectDefinition(type: .paper, xPercent: 0.18, yPercent: 0.42, angleDegrees: 0, speed: 120, radius: 22),
             InitialObjectDefinition(type: .paper, xPercent: 0.42, yPercent: 0.72, angleDegrees: 0, speed: 0, radius: 22),
             InitialObjectDefinition(type: .paper, xPercent: 0.72, yPercent: 0.72, angleDegrees: 0, speed: 0, radius: 22)
         ]
@@ -175,6 +180,66 @@ enum LevelLibrary {
 
     static let level6 = LevelDefinition(
         levelNumber: 6,
+        startingAmmo: 10,
+        launchSpeed: 110,
+        launchedRockRadius: 22,
+        initialObjects: [
+            InitialObjectDefinition(type: .scissors, xPercent: 0.15, yPercent: 0.72, angleDegrees: 0, speed: 40, radius: 22),
+            InitialObjectDefinition(type: .paper, xPercent: 0.75, yPercent: 0.72, angleDegrees: 0, speed: 0, radius: 22)
+        ]
+    )
+
+    static let level7 = LevelDefinition(
+        levelNumber: 7,
+        startingAmmo: 10,
+        launchSpeed: 110,
+        launchedRockRadius: 22,
+        initialObjects: [
+            InitialObjectDefinition(type: .scissors, xPercent: 0.15, yPercent: 0.72, angleDegrees: 0, speed: 40, radius: 22),
+            InitialObjectDefinition(type: .paper, xPercent: 0.75, yPercent: 0.72, angleDegrees: 0, speed: 0, radius: 22),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.25, yPercent: 0.4, angleDegrees: 0, speed: 0, radius: 22)
+        ]
+    )
+
+    static let level8 = LevelDefinition(
+        levelNumber: 8,
+        startingAmmo: 10,
+        launchSpeed: 110,
+        launchedRockRadius: 22,
+        initialObjects: [
+            InitialObjectDefinition(type: .scissors, xPercent: 0.15, yPercent: 0.75, angleDegrees: 0, speed: 30, radius: 22),
+            InitialObjectDefinition(type: .paper, xPercent: 0.65, yPercent: 0.75, angleDegrees: 0, speed: 0, radius: 22),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.75, yPercent: 0.4, angleDegrees: 180, speed: 30, radius: 22),
+            InitialObjectDefinition(type: .paper, xPercent: 0.35, yPercent: 0.4, angleDegrees: 0, speed: 0, radius: 22)
+        ]
+    )
+
+    static let level9 = LevelDefinition(
+        levelNumber: 9,
+        startingAmmo: 10,
+        launchSpeed: 110,
+        launchedRockRadius: 22,
+        initialObjects: [
+            InitialObjectDefinition(type: .paper, xPercent: 0.5, yPercent: 0.5, angleDegrees: 0, speed: 0, radius: 22),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.5, yPercent: 0.78, angleDegrees: 0, speed: 0, radius: 22)
+        ]
+    )
+
+    static let level10 = LevelDefinition(
+        levelNumber: 10,
+        startingAmmo: 10,
+        launchSpeed: 110,
+        launchedRockRadius: 22,
+        initialObjects: [
+            InitialObjectDefinition(type: .scissors, xPercent: 0.15, yPercent: 0.76, angleDegrees: 0, speed: 30, radius: 22),
+            InitialObjectDefinition(type: .paper, xPercent: 0.5, yPercent: 0.76, angleDegrees: 0, speed: 0, radius: 22),
+            InitialObjectDefinition(type: .scissors, xPercent: 0.25, yPercent: 0.45, angleDegrees: 0, speed: 30, radius: 22),
+            InitialObjectDefinition(type: .paper, xPercent: 0.7, yPercent: 0.45, angleDegrees: 0, speed: 0, radius: 22)
+        ]
+    )
+
+    static let level11 = LevelDefinition(
+        levelNumber: 11,
         startingAmmo: 8,
         launchSpeed: 100,
         launchedRockRadius: 22,
@@ -182,11 +247,11 @@ enum LevelLibrary {
             InitialObjectDefinition(type: .paper, xPercent: 0.2, yPercent: 0.78, angleDegrees: -33.6901, speed: 100, radius: 22),
             InitialObjectDefinition(type: .scissors, xPercent: 0.78, yPercent: 0.35, angleDegrees: 135, speed: 100, radius: 22)
         ],
-        introMessage: "Start small. Watch how scissors and paper move, then pick your moment to fire."
+        introMessage: "Regular play starts here. Keep a rock in play before the last paper disappears."
     )
 
-    static let level7 = LevelDefinition(
-        levelNumber: 7,
+    static let level12 = LevelDefinition(
+        levelNumber: 12,
         startingAmmo: 8,
         launchSpeed: 105,
         launchedRockRadius: 22,
@@ -197,8 +262,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level8 = LevelDefinition(
-        levelNumber: 8,
+    static let level13 = LevelDefinition(
+        levelNumber: 13,
         startingAmmo: 8,
         launchSpeed: 110,
         launchedRockRadius: 22,
@@ -210,8 +275,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level9 = LevelDefinition(
-        levelNumber: 9,
+    static let level14 = LevelDefinition(
+        levelNumber: 14,
         startingAmmo: 8,
         launchSpeed: 115,
         launchedRockRadius: 22,
@@ -223,21 +288,21 @@ enum LevelLibrary {
         ]
     )
 
-    static let level10 = LevelDefinition(
-        levelNumber: 10,
+    static let level15 = LevelDefinition(
+        levelNumber: 15,
         startingAmmo: 8,
         launchSpeed: 120,
         launchedRockRadius: 22,
         initialObjects: [
             InitialObjectDefinition(type: .scissors, xPercent: 0.2, yPercent: 0.45, angleDegrees: 0, speed: 120, radius: 22),
-            InitialObjectDefinition(type: .paper, xPercent: 0.7, yPercent: 0.45, angleDegrees: 180, speed: 120, radius: 22),
+            InitialObjectDefinition(type: .paper, xPercent: 0.7, yPercent: 0.6, angleDegrees: 180, speed: 120, radius: 22),
             InitialObjectDefinition(type: .scissors, xPercent: 0.8, yPercent: 0.75, angleDegrees: 180, speed: 120, radius: 22),
-            InitialObjectDefinition(type: .paper, xPercent: 0.3, yPercent: 0.75, angleDegrees: 0, speed: 120, radius: 22)
+            InitialObjectDefinition(type: .paper, xPercent: 0.3, yPercent: 0.3, angleDegrees: 0, speed: 120, radius: 22)
         ]
     )
 
-    static let level11 = LevelDefinition(
-        levelNumber: 11,
+    static let level16 = LevelDefinition(
+        levelNumber: 16,
         startingAmmo: 8,
         launchSpeed: 130,
         launchedRockRadius: 22,
@@ -250,8 +315,8 @@ enum LevelLibrary {
         introMessage: "Objects are a little faster now. Lead a moving target and use the bounces."
     )
 
-    static let level12 = LevelDefinition(
-        levelNumber: 12,
+    static let level17 = LevelDefinition(
+        levelNumber: 17,
         startingAmmo: 8,
         launchSpeed: 134,
         launchedRockRadius: 22,
@@ -263,8 +328,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level13 = LevelDefinition(
-        levelNumber: 13,
+    static let level18 = LevelDefinition(
+        levelNumber: 18,
         startingAmmo: 8,
         launchSpeed: 138,
         launchedRockRadius: 22,
@@ -277,8 +342,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level14 = LevelDefinition(
-        levelNumber: 14,
+    static let level19 = LevelDefinition(
+        levelNumber: 19,
         startingAmmo: 8,
         launchSpeed: 142,
         launchedRockRadius: 22,
@@ -292,8 +357,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level15 = LevelDefinition(
-        levelNumber: 15,
+    static let level20 = LevelDefinition(
+        levelNumber: 20,
         startingAmmo: 8,
         launchSpeed: 146,
         launchedRockRadius: 22,
@@ -306,8 +371,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level16 = LevelDefinition(
-        levelNumber: 16,
+    static let level21 = LevelDefinition(
+        levelNumber: 21,
         startingAmmo: 8,
         launchSpeed: 150,
         launchedRockRadius: 22,
@@ -320,8 +385,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level17 = LevelDefinition(
-        levelNumber: 17,
+    static let level22 = LevelDefinition(
+        levelNumber: 22,
         startingAmmo: 8,
         launchSpeed: 154,
         launchedRockRadius: 22,
@@ -334,40 +399,43 @@ enum LevelLibrary {
         ]
     )
 
-    static let level18 = LevelDefinition(
-        levelNumber: 18,
+    static let level23 = LevelDefinition(
+        levelNumber: 23,
         startingAmmo: 8,
         launchSpeed: 158,
         launchedRockRadius: 22,
         initialObjects: [
-            InitialObjectDefinition(type: .scissors, xPercent: 0.5, yPercent: 0.6, angleDegrees: 0, speed: 158, radius: 22)
+            InitialObjectDefinition(type: .scissors, xPercent: 0.5, yPercent: 0.6, angleDegrees: 0, speed: 158, radius: 22),
+            InitialObjectDefinition(type: .paper, xPercent: 0.5, yPercent: 0.3, angleDegrees: 35, speed: 158, radius: 22)
         ]
     )
 
-    static let level19 = LevelDefinition(
-        levelNumber: 19,
+    static let level24 = LevelDefinition(
+        levelNumber: 24,
         startingAmmo: 8,
         launchSpeed: 162,
         launchedRockRadius: 22,
         initialObjects: [
             InitialObjectDefinition(type: .scissors, xPercent: 0.28, yPercent: 0.55, angleDegrees: 0, speed: 162, radius: 22),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.72, yPercent: 0.72, angleDegrees: 0, speed: 162, radius: 22)
+            InitialObjectDefinition(type: .scissors, xPercent: 0.72, yPercent: 0.72, angleDegrees: 0, speed: 162, radius: 22),
+            InitialObjectDefinition(type: .paper, xPercent: 0.5, yPercent: 0.3, angleDegrees: 35, speed: 162, radius: 22)
         ]
     )
 
-    static let level20 = LevelDefinition(
-        levelNumber: 20,
+    static let level25 = LevelDefinition(
+        levelNumber: 25,
         startingAmmo: 8,
         launchSpeed: 166,
         launchedRockRadius: 22,
         initialObjects: [
             InitialObjectDefinition(type: .scissors, xPercent: 0.25, yPercent: 0.55, angleDegrees: 0, speed: 166, radius: 22),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.75, yPercent: 0.78, angleDegrees: 180, speed: 166, radius: 22)
+            InitialObjectDefinition(type: .scissors, xPercent: 0.75, yPercent: 0.78, angleDegrees: 180, speed: 166, radius: 22),
+            InitialObjectDefinition(type: .paper, xPercent: 0.5, yPercent: 0.3, angleDegrees: 35, speed: 166, radius: 22)
         ]
     )
 
-    static let level21 = LevelDefinition(
-        levelNumber: 21,
+    static let level26 = LevelDefinition(
+        levelNumber: 26,
         startingAmmo: 6,
         launchSpeed: 165,
         launchedRockRadius: 18,
@@ -381,8 +449,8 @@ enum LevelLibrary {
         introMessage: "Smaller targets need more careful aim. Keep your scissors alive until the paper is gone."
     )
 
-    static let level22 = LevelDefinition(
-        levelNumber: 22,
+    static let level27 = LevelDefinition(
+        levelNumber: 27,
         startingAmmo: 6,
         launchSpeed: 167,
         launchedRockRadius: 18,
@@ -395,8 +463,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level23 = LevelDefinition(
-        levelNumber: 23,
+    static let level28 = LevelDefinition(
+        levelNumber: 28,
         startingAmmo: 6,
         launchSpeed: 169,
         launchedRockRadius: 18,
@@ -410,8 +478,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level24 = LevelDefinition(
-        levelNumber: 24,
+    static let level29 = LevelDefinition(
+        levelNumber: 29,
         startingAmmo: 6,
         launchSpeed: 171,
         launchedRockRadius: 18,
@@ -423,8 +491,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level25 = LevelDefinition(
-        levelNumber: 25,
+    static let level30 = LevelDefinition(
+        levelNumber: 30,
         startingAmmo: 6,
         launchSpeed: 173,
         launchedRockRadius: 18,
@@ -437,8 +505,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level26 = LevelDefinition(
-        levelNumber: 26,
+    static let level31 = LevelDefinition(
+        levelNumber: 31,
         startingAmmo: 6,
         launchSpeed: 175,
         launchedRockRadius: 18,
@@ -451,8 +519,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level27 = LevelDefinition(
-        levelNumber: 27,
+    static let level32 = LevelDefinition(
+        levelNumber: 32,
         startingAmmo: 6,
         launchSpeed: 177,
         launchedRockRadius: 18,
@@ -465,8 +533,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level28 = LevelDefinition(
-        levelNumber: 28,
+    static let level33 = LevelDefinition(
+        levelNumber: 33,
         startingAmmo: 6,
         launchSpeed: 179,
         launchedRockRadius: 18,
@@ -478,8 +546,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level29 = LevelDefinition(
-        levelNumber: 29,
+    static let level34 = LevelDefinition(
+        levelNumber: 34,
         startingAmmo: 6,
         launchSpeed: 181,
         launchedRockRadius: 18,
@@ -492,8 +560,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level30 = LevelDefinition(
-        levelNumber: 30,
+    static let level35 = LevelDefinition(
+        levelNumber: 35,
         startingAmmo: 6,
         launchSpeed: 183,
         launchedRockRadius: 18,
@@ -506,8 +574,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level31 = LevelDefinition(
-        levelNumber: 31,
+    static let level36 = LevelDefinition(
+        levelNumber: 36,
         startingAmmo: 6,
         launchSpeed: 180,
         launchedRockRadius: 18,
@@ -521,8 +589,8 @@ enum LevelLibrary {
         introMessage: "Rocks now start in the arena too. Watch them: they can turn your last scissors into rock too soon."
     )
 
-    static let level32 = LevelDefinition(
-        levelNumber: 32,
+    static let level37 = LevelDefinition(
+        levelNumber: 37,
         startingAmmo: 6,
         launchSpeed: 182,
         launchedRockRadius: 18,
@@ -535,8 +603,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level33 = LevelDefinition(
-        levelNumber: 33,
+    static let level38 = LevelDefinition(
+        levelNumber: 38,
         startingAmmo: 6,
         launchSpeed: 184,
         launchedRockRadius: 18,
@@ -552,8 +620,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level34 = LevelDefinition(
-        levelNumber: 34,
+    static let level39 = LevelDefinition(
+        levelNumber: 39,
         startingAmmo: 6,
         launchSpeed: 186,
         launchedRockRadius: 18,
@@ -573,8 +641,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level35 = LevelDefinition(
-        levelNumber: 35,
+    static let level40 = LevelDefinition(
+        levelNumber: 40,
         startingAmmo: 6,
         launchSpeed: 188,
         launchedRockRadius: 18,
@@ -587,8 +655,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level36 = LevelDefinition(
-        levelNumber: 36,
+    static let level41 = LevelDefinition(
+        levelNumber: 41,
         startingAmmo: 6,
         launchSpeed: 190,
         launchedRockRadius: 18,
@@ -601,8 +669,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level37 = LevelDefinition(
-        levelNumber: 37,
+    static let level42 = LevelDefinition(
+        levelNumber: 42,
         startingAmmo: 6,
         launchSpeed: 192,
         launchedRockRadius: 18,
@@ -615,8 +683,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level38 = LevelDefinition(
-        levelNumber: 38,
+    static let level43 = LevelDefinition(
+        levelNumber: 43,
         startingAmmo: 6,
         launchSpeed: 194,
         launchedRockRadius: 18,
@@ -630,8 +698,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level39 = LevelDefinition(
-        levelNumber: 39,
+    static let level44 = LevelDefinition(
+        levelNumber: 44,
         startingAmmo: 6,
         launchSpeed: 196,
         launchedRockRadius: 18,
@@ -644,8 +712,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level40 = LevelDefinition(
-        levelNumber: 40,
+    static let level45 = LevelDefinition(
+        levelNumber: 45,
         startingAmmo: 6,
         launchSpeed: 198,
         launchedRockRadius: 18,
@@ -658,8 +726,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level41 = LevelDefinition(
-        levelNumber: 41,
+    static let level46 = LevelDefinition(
+        levelNumber: 46,
         startingAmmo: 5,
         launchSpeed: 190,
         launchedRockRadius: 18,
@@ -675,8 +743,8 @@ enum LevelLibrary {
         introMessage: "Walls reflect objects and shots. Look for a route around the divider."
     )
 
-    static let level42 = LevelDefinition(
-        levelNumber: 42,
+    static let level47 = LevelDefinition(
+        levelNumber: 47,
         startingAmmo: 5,
         launchSpeed: 192,
         launchedRockRadius: 18,
@@ -691,8 +759,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level43 = LevelDefinition(
-        levelNumber: 43,
+    static let level48 = LevelDefinition(
+        levelNumber: 48,
         startingAmmo: 5,
         launchSpeed: 194,
         launchedRockRadius: 18,
@@ -709,8 +777,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level44 = LevelDefinition(
-        levelNumber: 44,
+    static let level49 = LevelDefinition(
+        levelNumber: 49,
         startingAmmo: 5,
         launchSpeed: 196,
         launchedRockRadius: 18,
@@ -727,8 +795,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level45 = LevelDefinition(
-        levelNumber: 45,
+    static let level50 = LevelDefinition(
+        levelNumber: 50,
         startingAmmo: 5,
         launchSpeed: 198,
         launchedRockRadius: 18,
@@ -745,8 +813,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level46 = LevelDefinition(
-        levelNumber: 46,
+    static let level51 = LevelDefinition(
+        levelNumber: 51,
         startingAmmo: 5,
         launchSpeed: 200,
         launchedRockRadius: 18,
@@ -763,8 +831,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level47 = LevelDefinition(
-        levelNumber: 47,
+    static let level52 = LevelDefinition(
+        levelNumber: 52,
         startingAmmo: 5,
         launchSpeed: 202,
         launchedRockRadius: 18,
@@ -782,8 +850,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level48 = LevelDefinition(
-        levelNumber: 48,
+    static let level53 = LevelDefinition(
+        levelNumber: 53,
         startingAmmo: 5,
         launchSpeed: 204,
         launchedRockRadius: 18,
@@ -800,8 +868,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level49 = LevelDefinition(
-        levelNumber: 49,
+    static let level54 = LevelDefinition(
+        levelNumber: 54,
         startingAmmo: 5,
         launchSpeed: 206,
         launchedRockRadius: 18,
@@ -817,8 +885,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level50 = LevelDefinition(
-        levelNumber: 50,
+    static let level55 = LevelDefinition(
+        levelNumber: 55,
         startingAmmo: 5,
         launchSpeed: 208,
         launchedRockRadius: 18,
@@ -832,8 +900,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level51 = LevelDefinition(
-        levelNumber: 51,
+    static let level56 = LevelDefinition(
+        levelNumber: 56,
         startingAmmo: 5,
         launchSpeed: 200,
         launchedRockRadius: 18,
@@ -846,8 +914,8 @@ enum LevelLibrary {
         introMessage: "Stationary targets need a chain reaction. Send a rock into paper, let that moving paper reach scissors, then let the new moving scissors clear the other paper."
     )
 
-    static let level52 = LevelDefinition(
-        levelNumber: 52,
+    static let level57 = LevelDefinition(
+        levelNumber: 57,
         startingAmmo: 5,
         launchSpeed: 202,
         launchedRockRadius: 18,
@@ -860,8 +928,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level53 = LevelDefinition(
-        levelNumber: 53,
+    static let level58 = LevelDefinition(
+        levelNumber: 58,
         startingAmmo: 5,
         launchSpeed: 204,
         launchedRockRadius: 18,
@@ -874,8 +942,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level54 = LevelDefinition(
-        levelNumber: 54,
+    static let level59 = LevelDefinition(
+        levelNumber: 59,
         startingAmmo: 5,
         launchSpeed: 206,
         launchedRockRadius: 18,
@@ -885,8 +953,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level55 = LevelDefinition(
-        levelNumber: 55,
+    static let level60 = LevelDefinition(
+        levelNumber: 60,
         startingAmmo: 5,
         launchSpeed: 208,
         launchedRockRadius: 18,
@@ -903,8 +971,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level56 = LevelDefinition(
-        levelNumber: 56,
+    static let level61 = LevelDefinition(
+        levelNumber: 61,
         startingAmmo: 5,
         launchSpeed: 210,
         launchedRockRadius: 18,
@@ -921,8 +989,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level57 = LevelDefinition(
-        levelNumber: 57,
+    static let level62 = LevelDefinition(
+        levelNumber: 62,
         startingAmmo: 5,
         launchSpeed: 212,
         launchedRockRadius: 18,
@@ -938,8 +1006,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level58 = LevelDefinition(
-        levelNumber: 58,
+    static let level63 = LevelDefinition(
+        levelNumber: 63,
         startingAmmo: 5,
         launchSpeed: 214,
         launchedRockRadius: 18,
@@ -956,8 +1024,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level59 = LevelDefinition(
-        levelNumber: 59,
+    static let level64 = LevelDefinition(
+        levelNumber: 64,
         startingAmmo: 5,
         launchSpeed: 216,
         launchedRockRadius: 18,
@@ -969,8 +1037,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level60 = LevelDefinition(
-        levelNumber: 60,
+    static let level65 = LevelDefinition(
+        levelNumber: 65,
         startingAmmo: 5,
         launchSpeed: 218,
         launchedRockRadius: 18,
@@ -982,8 +1050,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level61 = LevelDefinition(
-        levelNumber: 61,
+    static let level66 = LevelDefinition(
+        levelNumber: 66,
         startingAmmo: 5,
         launchSpeed: 210,
         launchedRockRadius: 16,
@@ -996,8 +1064,8 @@ enum LevelLibrary {
         introMessage: "Objects can now have different sizes and speeds. Watch their paths before firing."
     )
 
-    static let level62 = LevelDefinition(
-        levelNumber: 62,
+    static let level67 = LevelDefinition(
+        levelNumber: 67,
         startingAmmo: 5,
         launchSpeed: 212,
         launchedRockRadius: 16,
@@ -1009,8 +1077,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level63 = LevelDefinition(
-        levelNumber: 63,
+    static let level68 = LevelDefinition(
+        levelNumber: 68,
         startingAmmo: 5,
         launchSpeed: 214,
         launchedRockRadius: 16,
@@ -1022,8 +1090,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level64 = LevelDefinition(
-        levelNumber: 64,
+    static let level69 = LevelDefinition(
+        levelNumber: 69,
         startingAmmo: 5,
         launchSpeed: 216,
         launchedRockRadius: 16,
@@ -1035,8 +1103,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level65 = LevelDefinition(
-        levelNumber: 65,
+    static let level70 = LevelDefinition(
+        levelNumber: 70,
         startingAmmo: 5,
         launchSpeed: 218,
         launchedRockRadius: 16,
@@ -1051,8 +1119,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level66 = LevelDefinition(
-        levelNumber: 66,
+    static let level71 = LevelDefinition(
+        levelNumber: 71,
         startingAmmo: 5,
         launchSpeed: 220,
         launchedRockRadius: 16,
@@ -1064,8 +1132,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level67 = LevelDefinition(
-        levelNumber: 67,
+    static let level72 = LevelDefinition(
+        levelNumber: 72,
         startingAmmo: 5,
         launchSpeed: 222,
         launchedRockRadius: 16,
@@ -1077,8 +1145,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level68 = LevelDefinition(
-        levelNumber: 68,
+    static let level73 = LevelDefinition(
+        levelNumber: 73,
         startingAmmo: 5,
         launchSpeed: 224,
         launchedRockRadius: 16,
@@ -1091,8 +1159,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level69 = LevelDefinition(
-        levelNumber: 69,
+    static let level74 = LevelDefinition(
+        levelNumber: 74,
         startingAmmo: 5,
         launchSpeed: 226,
         launchedRockRadius: 16,
@@ -1108,8 +1176,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level70 = LevelDefinition(
-        levelNumber: 70,
+    static let level75 = LevelDefinition(
+        levelNumber: 75,
         startingAmmo: 5,
         launchSpeed: 228,
         launchedRockRadius: 16,
@@ -1122,8 +1190,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level71 = LevelDefinition(
-        levelNumber: 71,
+    static let level76 = LevelDefinition(
+        levelNumber: 76,
         startingAmmo: 4,
         launchSpeed: 220,
         launchedRockRadius: 16,
@@ -1136,8 +1204,8 @@ enum LevelLibrary {
         introMessage: "Fewer shots now. Let scissors clear paper, then make your rocks count."
     )
 
-    static let level72 = LevelDefinition(
-        levelNumber: 72,
+    static let level77 = LevelDefinition(
+        levelNumber: 77,
         startingAmmo: 4,
         launchSpeed: 222,
         launchedRockRadius: 16,
@@ -1153,8 +1221,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level73 = LevelDefinition(
-        levelNumber: 73,
+    static let level78 = LevelDefinition(
+        levelNumber: 78,
         startingAmmo: 4,
         launchSpeed: 224,
         launchedRockRadius: 16,
@@ -1167,8 +1235,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level74 = LevelDefinition(
-        levelNumber: 74,
+    static let level79 = LevelDefinition(
+        levelNumber: 79,
         startingAmmo: 4,
         launchSpeed: 226,
         launchedRockRadius: 16,
@@ -1180,8 +1248,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level75 = LevelDefinition(
-        levelNumber: 75,
+    static let level80 = LevelDefinition(
+        levelNumber: 80,
         startingAmmo: 4,
         launchSpeed: 228,
         launchedRockRadius: 16,
@@ -1199,8 +1267,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level76 = LevelDefinition(
-        levelNumber: 76,
+    static let level81 = LevelDefinition(
+        levelNumber: 81,
         startingAmmo: 4,
         launchSpeed: 230,
         launchedRockRadius: 16,
@@ -1218,8 +1286,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level77 = LevelDefinition(
-        levelNumber: 77,
+    static let level82 = LevelDefinition(
+        levelNumber: 82,
         startingAmmo: 4,
         launchSpeed: 232,
         launchedRockRadius: 16,
@@ -1237,8 +1305,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level78 = LevelDefinition(
-        levelNumber: 78,
+    static let level83 = LevelDefinition(
+        levelNumber: 83,
         startingAmmo: 4,
         launchSpeed: 234,
         launchedRockRadius: 16,
@@ -1255,8 +1323,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level79 = LevelDefinition(
-        levelNumber: 79,
+    static let level84 = LevelDefinition(
+        levelNumber: 84,
         startingAmmo: 4,
         launchSpeed: 236,
         launchedRockRadius: 16,
@@ -1274,8 +1342,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level80 = LevelDefinition(
-        levelNumber: 80,
+    static let level85 = LevelDefinition(
+        levelNumber: 85,
         startingAmmo: 4,
         launchSpeed: 238,
         launchedRockRadius: 16,
@@ -1293,8 +1361,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level81 = LevelDefinition(
-        levelNumber: 81,
+    static let level86 = LevelDefinition(
+        levelNumber: 86,
         startingAmmo: 4,
         launchSpeed: 235,
         launchedRockRadius: 16,
@@ -1310,8 +1378,8 @@ enum LevelLibrary {
         introMessage: "More objects share the arena. Keep an eye on the scissors population."
     )
 
-    static let level82 = LevelDefinition(
-        levelNumber: 82,
+    static let level87 = LevelDefinition(
+        levelNumber: 87,
         startingAmmo: 4,
         launchSpeed: 237,
         launchedRockRadius: 16,
@@ -1328,8 +1396,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level83 = LevelDefinition(
-        levelNumber: 83,
+    static let level88 = LevelDefinition(
+        levelNumber: 88,
         startingAmmo: 4,
         launchSpeed: 239,
         launchedRockRadius: 16,
@@ -1344,8 +1412,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level84 = LevelDefinition(
-        levelNumber: 84,
+    static let level89 = LevelDefinition(
+        levelNumber: 89,
         startingAmmo: 4,
         launchSpeed: 241,
         launchedRockRadius: 16,
@@ -1364,8 +1432,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level85 = LevelDefinition(
-        levelNumber: 85,
+    static let level90 = LevelDefinition(
+        levelNumber: 90,
         startingAmmo: 4,
         launchSpeed: 243,
         launchedRockRadius: 16,
@@ -1380,8 +1448,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level86 = LevelDefinition(
-        levelNumber: 86,
+    static let level91 = LevelDefinition(
+        levelNumber: 91,
         startingAmmo: 4,
         launchSpeed: 245,
         launchedRockRadius: 16,
@@ -1399,8 +1467,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level87 = LevelDefinition(
-        levelNumber: 87,
+    static let level92 = LevelDefinition(
+        levelNumber: 92,
         startingAmmo: 4,
         launchSpeed: 247,
         launchedRockRadius: 16,
@@ -1418,8 +1486,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level88 = LevelDefinition(
-        levelNumber: 88,
+    static let level93 = LevelDefinition(
+        levelNumber: 93,
         startingAmmo: 4,
         launchSpeed: 249,
         launchedRockRadius: 16,
@@ -1434,8 +1502,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level89 = LevelDefinition(
-        levelNumber: 89,
+    static let level94 = LevelDefinition(
+        levelNumber: 94,
         startingAmmo: 4,
         launchSpeed: 251,
         launchedRockRadius: 16,
@@ -1453,8 +1521,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level90 = LevelDefinition(
-        levelNumber: 90,
+    static let level95 = LevelDefinition(
+        levelNumber: 95,
         startingAmmo: 4,
         launchSpeed: 253,
         launchedRockRadius: 16,
@@ -1473,8 +1541,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level91 = LevelDefinition(
-        levelNumber: 91,
+    static let level96 = LevelDefinition(
+        levelNumber: 96,
         startingAmmo: 4,
         launchSpeed: 250,
         launchedRockRadius: 16,
@@ -1493,8 +1561,8 @@ enum LevelLibrary {
         introMessage: "The final ten levels combine everything. Take your time and protect the scissors while paper remains."
     )
 
-    static let level92 = LevelDefinition(
-        levelNumber: 92,
+    static let level97 = LevelDefinition(
+        levelNumber: 97,
         startingAmmo: 4,
         launchSpeed: 253,
         launchedRockRadius: 16,
@@ -1513,8 +1581,8 @@ enum LevelLibrary {
         ]
     )
 
-    static let level93 = LevelDefinition(
-        levelNumber: 93,
+    static let level98 = LevelDefinition(
+        levelNumber: 98,
         startingAmmo: 4,
         launchSpeed: 256,
         launchedRockRadius: 16,
@@ -1528,100 +1596,6 @@ enum LevelLibrary {
         ],
         walls: [
             ArenaWallDefinition(xPercent: 0.5, yPercent: 0.48, widthPercent: 0.12, heightPercent: 0.3)
-        ]
-    )
-
-    static let level94 = LevelDefinition(
-        levelNumber: 94,
-        startingAmmo: 4,
-        launchSpeed: 259,
-        launchedRockRadius: 16,
-        initialObjects: [
-            InitialObjectDefinition(type: .paper, xPercent: 0.12, yPercent: 0.24, angleDegrees: 18, speed: 259, radius: 14),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.38, yPercent: 0.32, angleDegrees: 147, speed: 241, radius: 14),
-            InitialObjectDefinition(type: .paper, xPercent: 0.72, yPercent: 0.24, angleDegrees: 264, speed: 250, radius: 14),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.84, yPercent: 0.58, angleDegrees: 201, speed: 259, radius: 14),
-            InitialObjectDefinition(type: .paper, xPercent: 0.46, yPercent: 0.72, angleDegrees: 333, speed: 236, radius: 20),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.22, yPercent: 0.86, angleDegrees: 76, speed: 250, radius: 14)
-        ],
-        walls: [
-            ArenaWallDefinition(xPercent: 0.5, yPercent: 0.56, widthPercent: 0.38, heightPercent: 0.06)
-        ]
-    )
-
-    static let level95 = LevelDefinition(
-        levelNumber: 95,
-        startingAmmo: 4,
-        launchSpeed: 262,
-        launchedRockRadius: 16,
-        initialObjects: [
-            InitialObjectDefinition(type: .paper, xPercent: 0.16, yPercent: 0.24, angleDegrees: 0, speed: 262, radius: 14),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.84, yPercent: 0.3, angleDegrees: 180, speed: 262, radius: 14),
-            InitialObjectDefinition(type: .paper, xPercent: 0.2, yPercent: 0.58, angleDegrees: 0, speed: 225, radius: 20),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.8, yPercent: 0.66, angleDegrees: 180, speed: 262, radius: 14),
-            InitialObjectDefinition(type: .paper, xPercent: 0.3, yPercent: 0.86, angleDegrees: 0, speed: 0, radius: 14),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.7, yPercent: 0.86, angleDegrees: 0, speed: 0, radius: 14),
-            InitialObjectDefinition(type: .rock, xPercent: 0.5, yPercent: 0.5, angleDegrees: 90, speed: 170, radius: 14)
-        ],
-        walls: [
-            ArenaWallDefinition(xPercent: 0.4, yPercent: 0.52, widthPercent: 0.08, heightPercent: 0.46),
-            ArenaWallDefinition(xPercent: 0.6, yPercent: 0.52, widthPercent: 0.08, heightPercent: 0.46)
-        ]
-    )
-
-    static let level96 = LevelDefinition(
-        levelNumber: 96,
-        startingAmmo: 4,
-        launchSpeed: 265,
-        launchedRockRadius: 16,
-        initialObjects: [
-            InitialObjectDefinition(type: .paper, xPercent: 0.18, yPercent: 0.2, angleDegrees: 45, speed: 265, radius: 14),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.82, yPercent: 0.26, angleDegrees: 135, speed: 265, radius: 14),
-            InitialObjectDefinition(type: .paper, xPercent: 0.2, yPercent: 0.54, angleDegrees: 315, speed: 265, radius: 14),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.8, yPercent: 0.64, angleDegrees: 225, speed: 265, radius: 14),
-            InitialObjectDefinition(type: .paper, xPercent: 0.3, yPercent: 0.86, angleDegrees: 0, speed: 0, radius: 20),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.7, yPercent: 0.86, angleDegrees: 0, speed: 0, radius: 14)
-        ],
-        walls: [
-            ArenaWallDefinition(xPercent: 0.3, yPercent: 0.48, widthPercent: 0.08, heightPercent: 0.34),
-            ArenaWallDefinition(xPercent: 0.5, yPercent: 0.64, widthPercent: 0.34, heightPercent: 0.06),
-            ArenaWallDefinition(xPercent: 0.7, yPercent: 0.48, widthPercent: 0.08, heightPercent: 0.34)
-        ]
-    )
-
-    static let level97 = LevelDefinition(
-        levelNumber: 97,
-        startingAmmo: 4,
-        launchSpeed: 268,
-        launchedRockRadius: 16,
-        initialObjects: [
-            InitialObjectDefinition(type: .paper, xPercent: 0.14, yPercent: 0.26, angleDegrees: 17, speed: 268, radius: 14),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.86, yPercent: 0.32, angleDegrees: 163, speed: 268, radius: 14),
-            InitialObjectDefinition(type: .paper, xPercent: 0.24, yPercent: 0.8, angleDegrees: 343, speed: 268, radius: 14),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.76, yPercent: 0.78, angleDegrees: 197, speed: 268, radius: 14),
-            InitialObjectDefinition(type: .paper, xPercent: 0.44, yPercent: 0.56, angleDegrees: 91, speed: 232, radius: 14),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.62, yPercent: 0.6, angleDegrees: 269, speed: 232, radius: 20),
-            InitialObjectDefinition(type: .rock, xPercent: 0.5, yPercent: 0.22, angleDegrees: 90, speed: 174, radius: 14)
-        ]
-    )
-
-    static let level98 = LevelDefinition(
-        levelNumber: 98,
-        startingAmmo: 4,
-        launchSpeed: 271,
-        launchedRockRadius: 16,
-        initialObjects: [
-            InitialObjectDefinition(type: .paper, xPercent: 0.16, yPercent: 0.24, angleDegrees: 0, speed: 271, radius: 14),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.84, yPercent: 0.3, angleDegrees: 180, speed: 271, radius: 14),
-            InitialObjectDefinition(type: .paper, xPercent: 0.2, yPercent: 0.72, angleDegrees: 0, speed: 234, radius: 20),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.8, yPercent: 0.82, angleDegrees: 180, speed: 271, radius: 14),
-            InitialObjectDefinition(type: .paper, xPercent: 0.5, yPercent: 0.52, angleDegrees: 0, speed: 0, radius: 14),
-            InitialObjectDefinition(type: .scissors, xPercent: 0.5, yPercent: 0.86, angleDegrees: 0, speed: 0, radius: 14),
-            InitialObjectDefinition(type: .rock, xPercent: 0.5, yPercent: 0.22, angleDegrees: 90, speed: 176, radius: 14)
-        ],
-        walls: [
-            ArenaWallDefinition(xPercent: 0.5, yPercent: 0.42, widthPercent: 0.34, heightPercent: 0.06),
-            ArenaWallDefinition(xPercent: 0.5, yPercent: 0.7, widthPercent: 0.34, heightPercent: 0.06)
         ]
     )
 
@@ -1655,7 +1629,6 @@ enum LevelLibrary {
         ],
         introMessage: "Clear the paper before firing. This is the last campaign level. Make every shot count!"
     )
-
 }
 
 extension LevelLibrary {
