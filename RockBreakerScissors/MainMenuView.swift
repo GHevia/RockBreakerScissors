@@ -60,8 +60,18 @@ struct MainMenuView: View {
             }
             .buttonStyle(PlainButtonStyle())
 
+            MenuButton(title: "Random Levels") {
+                viewModel.startRandomGame()
+            }
+
+            if viewModel.campaignCompleted {
+                Text("Campaign complete! Try a new random challenge.")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+            }
+
             MenuButton(title: "Start Over") {
-                viewModel.startGame(at: 0)
+                viewModel.startGame(at: 0, replayInstructions: true)
             }
         }
     }
@@ -157,7 +167,8 @@ struct LevelSelectView: View {
                     .frame(height: 62)
 
                 if unlocked {
-                    Text("\(index + 1)")
+                    Text(index < 5 ? "Lesson \(index + 1)" : "\(index + 1)")
+                        .minimumScaleFactor(0.7)
                         .font(.headline)
                 } else {
                     Image(systemName: "lock.fill")

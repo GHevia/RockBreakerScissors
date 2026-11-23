@@ -9,7 +9,6 @@ final class GameScene: SKScene {
     var didUseAmmo: (() -> Void)?
     var canLaunchRock: (() -> Bool)?
     var isGameplayPaused = false
-    var didTouchArena: (() -> Void)?
     var didTryLaunchWithoutAmmo: (() -> Void)?
 
     // MARK: - Private state
@@ -17,6 +16,8 @@ final class GameScene: SKScene {
     private var currentLevel: LevelDefinition?
     private var objectNodes: [SKSpriteNode] = []
     private var isShowingResult = false
+    private var hasLaunchedRock = false
+    private(set) var lossMessage: String?
 
     private var launcherPosition: CGPoint = .zero
     private var aimDots: [SKShapeNode] = []
@@ -87,6 +88,8 @@ final class GameScene: SKScene {
         wallNodes.removeAll()
         wallRects.removeAll()
         isShowingResult = false
+        hasLaunchedRock = false
+        lossMessage = nil
         touchStartPoint = nil
 
         setupLauncher()
@@ -300,7 +303,6 @@ final class GameScene: SKScene {
         let location = touch.location(in: self)
         touchStartPoint = location
         updateAimDots(from: launcherPosition, toward: location)
-        didTouchArena?()
     }
 
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -359,6 +361,7 @@ final class GameScene: SKScene {
         addChild(rockNode)
         objectNodes.append(rockNode)
 
+        hasLaunchedRock = true
         didUseAmmo?()
     }
 
@@ -601,11 +604,17 @@ final class GameScene: SKScene {
             return
         }
 
-        // Scissors can still be beaten by the rocks remaining in the launcher.
-        if scissorsCount == objectNodes.count && !(canLaunchRock?() ?? true) {
+        // Scissors-only lessons and cleared paper setups remain safe until the first shot.
+        if scissorsCount == objectNodes.count && (hasLaunchedRock || !(canLaunchRock?() ?? true)) {
             isShowingResult = true
             onLose?(.scissors)
             return
+        }
+
+        if paperCount > 0 && scissorsCount == 0 {
+            isShowingResult = true
+            lossMessage = "Only rocks and paper remain. Keep scissors alive until all the paper is gone!"
+            onLose?(.paper)
         }
     }
 }

@@ -22,12 +22,33 @@ final class RockBreakerScissorsUITests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-    func testExample() throws {
-        // UI tests must launch the application that they test.
+    func testSelectingLessonShowsTextDespiteSavedLevel100() {
+        let app = XCUIApplication()
+        app.launchArguments = ["-highestUnlockedLevel", "100", "-completedTutorialLevels", "31"]
+        app.launch()
+        app.buttons["Select Level"].tap()
+        app.buttons["Lesson 1"].tap()
+        let firstMessage = app.staticTexts["Your goal is to turn every object into rock. Rock turns scissors into rock when they touch."]
+        XCTAssertTrue(firstMessage.waitForExistence(timeout: 5))
+        app.buttons["Next"].tap()
+        XCTAssertTrue(app.buttons["Play"].exists)
+        app.buttons["Play"].tap()
+        XCTAssertFalse(firstMessage.exists)
+        app.buttons["Help"].tap()
+        XCTAssertTrue(firstMessage.exists)
+    }
+
+    func testRandomModeCanBeSkippedAndReplayed() {
         let app = XCUIApplication()
         app.launch()
-
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        app.buttons["Random Levels"].tap()
+        XCTAssertTrue(app.staticTexts["Random 1"].waitForExistence(timeout: 5))
+        app.buttons["Skip"].tap()
+        XCTAssertTrue(app.staticTexts["Random 2"].exists)
+        app.buttons["Restart"].tap()
+        XCTAssertTrue(app.staticTexts["Random 2"].exists)
+        app.buttons["Menu"].tap()
+        XCTAssertTrue(app.buttons["Random Levels"].exists)
     }
 
     func testLaunchPerformance() throws {

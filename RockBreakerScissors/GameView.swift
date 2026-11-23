@@ -20,13 +20,6 @@ struct GameView: View {
                     SpriteView(scene: scene)
                         .ignoresSafeArea()
 
-                    if let message = viewModel.levelHintMessage {
-                        VStack {
-                            LevelHintOverlay(message: message)
-                            Spacer()
-                        }
-                    }
-
                     if viewModel.phase == .won || viewModel.phase == .lost {
                         resultOverlay
                     }
@@ -38,6 +31,7 @@ struct GameView: View {
                             .onTapGesture { }
                         ScrollView {
                             TutorialOverlay(
+                                title: viewModel.levelTitle,
                                 message: message,
                                 isLastStep: viewModel.isLastTutorialStep,
                                 onNext: { viewModel.advanceTutorial() },
@@ -51,34 +45,17 @@ struct GameView: View {
                 .onAppear {
                     configureScene(size: arenaGeo.size)
 
-                    DispatchQueue.main.async {
-                        scene.size = arenaGeo.size
-                        loadCurrentLevel()
-                        viewModel.startTutorialIfNeeded()
-                        viewModel.showLevelHintIfNeeded()
-                    }
+                    loadCurrentLevel()
                 }
                 .onChange(of: arenaGeo.size) { newSize in
+                    // Resize the live arena without resetting its objects or ammunition.
                     scene.size = newSize
-
-                    DispatchQueue.main.async {
-                        loadCurrentLevel()
-                    }
                 }
                 .onChange(of: viewModel.reloadTrigger) { _ in
                     loadCurrentLevel()
-                    viewModel.showLevelHintIfNeeded()
                 }
                 .onChange(of: viewModel.showTutorial) { isShowing in
                     scene.isGameplayPaused = isShowing
-                }
-                .onChange(of: viewModel.levelHintID) { hintID in
-                    let currentID = hintID
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-                        if viewModel.levelHintID == currentID {
-                            viewModel.dismissLevelHint()
-                        }
-                    }
                 }
                 .onChange(of: viewModel.ammoWarningID) { _ in
                     flashAmmoCounter()
@@ -119,6 +96,12 @@ struct GameView: View {
 
             Spacer()
 
+            if viewModel.isRandomMode {
+                smallButton(title: "Skip") { viewModel.skipRandomLevel() }
+            } else if viewModel.hasInstructions {
+                smallButton(title: "Help") { viewModel.showInstructions() }
+            }
+
             smallButton(title: "Restart") {
                 viewModel.restartLevel()
             }
@@ -140,19 +123,31 @@ struct GameView: View {
             }
 
             VStack(spacing: 6) {
-                Text(didWin ? "YOU WIN!" : "YOU LOSE")
+                Text(viewModel.isCampaignVictory ? "You win!" : didWin ? "LEVEL COMPLETE!" : "TRY AGAIN")
                     .font(.system(size: 28, weight: .heavy, design: .rounded))
                     .foregroundColor(didWin ? .green : .red)
 
-                if let resultObjectType = viewModel.resultObjectType {
-                    Text("All objects are \(resultObjectType.displayName).")
+                if viewModel.isCampaignVictory {
+                    Text("You completed all \(viewModel.levels.count) campaign levels!")
+                        .font(.subheadline.bold())
+                        .multilineTextAlignment(.center)
+                } else if let resultObjectType = viewModel.resultObjectType {
+                    Text(viewModel.resultMessage ?? "All objects are \(resultObjectType.displayName).")
                         .font(.subheadline.bold())
                         .multilineTextAlignment(.center)
                         .foregroundColor(.secondary)
                 }
             }
 
-            if viewModel.phase == .won && viewModel.hasNextLevel {
+            if viewModel.isCampaignVictory {
+                largeButton(title: "Play Random Levels", fill: .green) {
+                    viewModel.startRandomGame()
+                }
+            } else if viewModel.isRandomMode {
+                largeButton(title: "Next Random Level", fill: .green) {
+                    viewModel.skipRandomLevel()
+                }
+            } else if viewModel.phase == .won && viewModel.hasNextLevel {
                 largeButton(title: "Next Level", fill: .green) {
                     viewModel.goToNextLevel()
                 }
@@ -184,7 +179,7 @@ struct GameView: View {
         }
 
         scene.onLose = { finalObjectType in
-            viewModel.failLevel(finalObjectType: finalObjectType)
+            viewModel.failLevel(finalObjectType: finalObjectType, message: scene.lossMessage)
         }
 
         scene.canLaunchRock = {
@@ -193,10 +188,6 @@ struct GameView: View {
 
         scene.didUseAmmo = {
             viewModel.useAmmo()
-        }
-
-        scene.didTouchArena = {
-            viewModel.dismissLevelHint()
         }
 
         scene.didTryLaunchWithoutAmmo = {

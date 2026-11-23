@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 
 struct TutorialOverlay: View {
+    let title: String
     let message: String
     let isLastStep: Bool
     let onNext: () -> Void
@@ -16,7 +17,7 @@ struct TutorialOverlay: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Tutorial Level")
+            Text(title)
                 .font(.caption.bold())
                 .textCase(.uppercase)
                 .foregroundColor(.white.opacity(0.72))
@@ -46,23 +47,4 @@ struct TutorialOverlay: View {
         .padding(.horizontal, 16)
         .padding(.bottom, 16)
     }
-}
-
-struct LevelHintOverlay: View {
-    let message: String
-
-    var body: some View {
-        Text(message)
-            .font(.subheadline.bold())
-            .multilineTextAlignment(.center)
-            .fixedSize(horizontal: false, vertical: true)
-            .padding(.horizontal, 16)
-            .padding(.vertical, 12)
-            .frame(maxWidth: 320)
-            .background(Color.black.opacity(0.78))
-            .foregroundColor(.white)
-            .cornerRadius(14)
-            .padding(.horizontal, 16)
-            .padding(.top, 16)
-        }
 }
